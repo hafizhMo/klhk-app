@@ -10,5 +10,7 @@
     </head>
     <body>
         <h1 class="text-3xl font-bold underline">Hello Yiren!</h1>
+        <h1 class="text-3xl font-bold underline">Hello Yiren!</h1>
+        <h1 class="text-3xl font-bold underline">Hello Yiren!</h1>
     </body>
 </html>
