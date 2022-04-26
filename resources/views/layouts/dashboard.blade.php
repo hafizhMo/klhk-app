@@ -12,12 +12,7 @@
     </head>
     <body>
         <div class="flex w-full h-screen">
-            <div class="w-3/5 bg-red-900">
-                <img class="h-screen object-cover" src="https://learnenglishteens.britishcouncil.org/sites/teens/files/styles/article/public/field/image/rs930_135120665-low.jpg?itok=g5LI5W4C" alt="auth-image">
-            </div>
-            <div class="w-2/5 flex flex-wrap items-center p-8">
-                @yield('content')
-            </div>
+            @yield('content')
         </div>
     </body>
 </html>
