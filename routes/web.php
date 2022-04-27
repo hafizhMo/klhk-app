@@ -41,8 +41,12 @@ Route::get('/user/create-file', function() {
     return view('user/create');
 });
 
-Route::get('/user/upload-file', function() {
-    return view('user/upload');
+Route::get('/user/upload-file/low', function() {
+    return view('uploads/low');
+});
+
+Route::get('/user/upload-file/middle', function() {
+    return view('uploads/middle');
 });
 
 Route::get('/user/detail-file', function() {
