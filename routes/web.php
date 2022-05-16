@@ -52,3 +52,15 @@ Route::get('/user/upload-file/middle', function() {
 Route::get('/user/detail-file', function() {
     return view('user/detail');
 });
+
+Route::get('/admin/dashboard', function() {
+    return view('admin/dashboard');
+});
+
+Route::get('/admin/detail', function() {
+    return view('admin/detail');
+});
+
+Route::get('/admin/berkas', function() {
+    return view('admin/berkas');
+});

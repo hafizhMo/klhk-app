@@ -9,7 +9,9 @@
 
         <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://unpkg.com/flowbite@latest/dist/flowbite.min.css" />
+        <script src="https://unpkg.com/flowbite@1.4.5/dist/flowbite.js"></script>
     </head>
+    
     <body>
         <div class="flex w-full">
             <div class="w-1/5 bg-green-700 p-6">
@@ -25,7 +27,7 @@
                 </a>
             </div>
         </div>
-        <hr class="text-gray-200">
+        <hr class="text-gray-500">
         <div class="flex w-full h-screen">
             <div class="w-1/5 bg-green-700 p-6">
                 <p class="text-gray-300 text-xs">MENU</p>
