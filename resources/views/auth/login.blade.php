@@ -4,9 +4,9 @@
     <div class="container mx-auto">
         <img class="mb-12" src="https://dishut.jatimprov.go.id/portal/public/fe/images/logo.png" alt="image-logo-dinas-kehutanan">
         <h2 class="text-xl font-semibold">Sign in</h2>
-        <p class="mt-2 text-base">If you don't have an account register<br>You can 
+        <!-- <p class="mt-2 text-base">If you don't have an account register<br>You can 
           <a href="{{ url('/auth/register') }}" class="text-green-700 hover:text-green-800 font-semibold">Register here</a>!
-        </p>
+        </p> -->
 
         <div class="mt-6 mb-6">
           <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Email</label>
