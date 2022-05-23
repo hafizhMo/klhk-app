@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,12 +15,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('auth/login');
+    return redirect('auth/login');
+    // return view('auth/login');
 });
 
-Route::get('/auth/login', function() {
-    return view('auth/login');
-});
+Route::get('/auth/login', [AuthenticatedSessionController::class, 'create']);
+
+Route::post('/auth/login', [AuthenticatedSessionController::class, 'store']);
 
 Route::get('/auth/forgot-password', function() {
     return view('auth/password/forgot');
