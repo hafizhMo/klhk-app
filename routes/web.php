@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Pengajuan\TemporaryPengajuanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,8 +41,10 @@ Route::get('/user/dashboard', function() {
 });
 
 Route::get('/user/create-file', function() {
-    return view('user/create');
+    return view('user.create');
 });
+
+Route::post('/user/create-file', [TemporaryPengajuanController::class, 'redirect']);
 
 Route::get('/user/upload-file/low', function() {
     return view('uploads/low');
