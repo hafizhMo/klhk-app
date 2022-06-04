@@ -36,7 +36,6 @@
                 <th scope="col" class="px-6 py-3">No. Surat</th>
                 <th scope="col" class="px-6 py-3">Tanggal Pengajuan</th>
                 <th scope="col" class="px-6 py-3">Perihal</th>
-                <th scope="col" class="px-6 py-3">Tanggal Diterima</th>
                 <th scope="col" class="px-6 py-3">Skala Usaha</th>
                 <th scope="col" class="px-6 py-3">Status</th>
                 <th scope="col" class="px-6 py-3">Aksi
@@ -45,50 +44,26 @@
             </tr>
         </thead>
         <tbody>
+            @foreach ($pengajuan as $data)
             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">Eren Yeager</th>
-                <td class="px-6 py-4">SRT1231231232</td>
-                <td class="px-6 py-4">20/04/2022</td>
-                <td class="px-6 py-4">Perizinan pembukaan budidaya titan abnormal</td>
-                <td class="px-6 py-4">24/04/2022</td>
-                <td class="px-6 py-4">Menengah</td>
-                <td class="px-6 py-4">Diterima</td>
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">{{ $data->nama_pengajuan }}</th>
+                <td class="px-6 py-4">{{ $data->no_surat }}</td>
+                <td class="px-6 py-4">{{ $data->created_at }}</td>
+                <td class="px-6 py-4">{{ $data->perihal }}</td>
+                <td class="px-6 py-4">{{ $data->skala_usaha }}</td>
+                <td class="px-6 py-4">?</td>
                 <td class="px-6 py-4 text-right">
                     <button class="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" type="button" data-modal-toggle="defaultModal">View</button>
                 </td>
             </tr>
+            @endforeach
             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">Eren Yeager</th>
                 <td class="px-6 py-4">SRT1231231232</td>
                 <td class="px-6 py-4">20/04/2022</td>
                 <td class="px-6 py-4">Perizinan pembukaan budidaya titan abnormal</td>
-                <td class="px-6 py-4">24/04/2022</td>
                 <td class="px-6 py-4">Menengah</td>
                 <td class="px-6 py-4">Revisi</td>
-                <td class="px-6 py-4 text-right">
-                    <button class="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" type="button" data-modal-toggle="defaultModal">View</button>
-                </td>
-            </tr>
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">Eren Yeager</th>
-                <td class="px-6 py-4">SRT1231231232</td>
-                <td class="px-6 py-4">20/04/2022</td>
-                <td class="px-6 py-4">Perizinan pembukaan budidaya titan abnormal</td>
-                <td class="px-6 py-4">24/04/2022</td>
-                <td class="px-6 py-4">Kecil</td>
-                <td class="px-6 py-4">Verifikasi Lapangan</td>
-                <td class="px-6 py-4 text-right">
-                    <button class="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" type="button" data-modal-toggle="defaultModal">View</button>
-                </td>
-            </tr>
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">Eren Yeager</th>
-                <td class="px-6 py-4">SRT1231231232</td>
-                <td class="px-6 py-4">20/04/2022</td>
-                <td class="px-6 py-4">Perizinan pembukaan budidaya titan abnormal</td>
-                <td class="px-6 py-4">24/04/2022</td>
-                <td class="px-6 py-4">Menengah</td>
-                <td class="px-6 py-4">Ditolak</td>
                 <td class="px-6 py-4 text-right">
                     <button class="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" type="button" data-modal-toggle="defaultModal">View</button>
                 </td>

@@ -1,8 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Pengajuan\TemporaryPengajuanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,15 +37,11 @@ Route::get('/auth/register', function() {
     return view('auth/register');
 });
 
-Route::get('/user/dashboard', function() {
-    return view('user/dashboard');
-});
+Route::get('/user/dashboard', [DashboardController::class, 'create']);
 
-Route::get('/user/create-file', function() {
-    return view('user.create');
-});
+Route::get('/user/create-file', [PengajuanController::class, 'create']);
 
-Route::post('/user/create-file', [TemporaryPengajuanController::class, 'redirect']);
+Route::post('/user/create-file', [PengajuanController::class, 'store']);
 
 Route::get('/user/upload-file/low', function() {
     return view('uploads/low');
