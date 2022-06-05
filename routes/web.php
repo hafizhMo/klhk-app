@@ -30,21 +30,20 @@ Route::middleware('guest')->prefix('auth')->group(function () {
     Route::get('reset-password', function() {
         return view('auth.password.reset');
     });
-    Route::get('register', function() {
-        return view('auth.register');
-    });
+    // ! Register feature disabled on default
+    // Route::get('register', function() {
+    //     return view('auth.register');
+    // });
 });
 
 Route::middleware('auth')->prefix('user')->group(function () {
     Route::get('dashboard', [DashboardController::class, 'create']);
     Route::get('create-file', [PengajuanController::class, 'create']);
     Route::post('create-file', [PengajuanController::class, 'store']);
-    Route::get('upload-file/low', function() {
-        return view('uploads.low')->with('user', Auth::user());
-    });
-    Route::get('upload-file/middle', function() {
-        return view('uploads.middle')->with('user', Auth::user());
-    });
+    Route::get('upload-file/low/{id}', [PengajuanController::class, 'create_low']);
+    Route::post('upload-file/low/{id}', [PengajuanController::class, 'store_low']);
+    Route::get('upload-file/middle/{id}', [PengajuanController::class, 'create_middle']);
+    Route::post('upload-file/middle/{id}', [PengajuanController::class, 'store_middle']);
     Route::get('detail-file', function() {
         return view('user.detail')->with('user', Auth::user());
     });

@@ -30,7 +30,7 @@
             </div>
         </div>
         <hr class="text-gray-500">
-        <div class="flex w-full h-fit">
+        <div class="flex w-full h-screen">
             <div class="w-1/5 bg-green-700 p-6">
                 <p class="text-gray-300 text-xs">MENU</p>
                 <a href="#" class="flex flex-wrap bg-green-800 text-white items-center mt-2 p-2 hover:bg-green-600">

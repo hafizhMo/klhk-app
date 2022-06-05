@@ -15,11 +15,12 @@ class CreatePengajuanTable extends Migration
     {
         Schema::create('pengajuan', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->string('nama_pengajuan');
             $table->string('no_surat');
             $table->string('perihal');
             $table->char('skala_usaha');
+            $table->char('status');
             $table->timestamps();
         });
     }

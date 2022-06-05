@@ -68,12 +68,12 @@
                         <td class="px-6 py-4">{{ $data->no_surat }}</td>
                         <td class="px-6 py-4">{{ $data->created_at }}</td>
                         <td class="px-6 py-4">{{ $data->perihal }}</td>
-                        <td class="px-6 py-4">{{ $data->skala_usaha }}</td>
-                        <td class="px-6 py-4">?</td>
+                        <td class="px-6 py-4 capitalize">{{ $data->skala_usaha }}</td>
+                        <td class="px-6 py-4 capitalize">{{ $data->status }}</td>
                         <td class="px-6 py-4 text-right">
                             <button
                                 class="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                                type="button" data-modal-toggle="defaultModal">View</button>
+                                type="button" data-modal-toggle="modal-{{ $data->id }}">View</button>
                         </td>
                     </tr>
                 @endforeach
@@ -104,9 +104,9 @@
                 </div>
             </div>
         </div>
-
-
-        <div id="defaultModal" tabindex="-1" aria-hidden="true"
+    </div>
+    @foreach ($pengajuan as $data)
+        <div id="modal-{{ $data->id }}" tabindex="-1" aria-hidden="true"
             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full justify-center items-center">
             <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
                 <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -116,7 +116,7 @@
                         </h3>
                         <button type="button"
                             class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                            data-modal-toggle="defaultModal">
+                            data-modal-toggle="modal-{{ $data->id }}">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd"
@@ -125,35 +125,35 @@
                             </svg>
                         </button>
                     </div>
-
                     <div class="flex p-6 text-gray-500 text-base">
                         <div class="font-medium mr-8 space-y-4 ">
                             <p class="text-base">No Surat</p>
                             <p class="text-base">Tanggal</p>
                             <p class="text-base">Perihal</p>
-                            <p class="text-base">Tanggal Diterima</p>
                             <p class="text-base">Skala Usaha</p>
                             <p class="text-base">Status</p>
                         </div>
                         <div class="font-regular space-y-4 ">
-                            <p class="text-base">: SRT1231231232</p>
-                            <p class="text-base">: 20/04/2022</p>
-                            <p class="text-base">: Perizinan pembukaan budidaya titan abnormal</p>
-                            <p class="text-base">: 20/04/2022</p>
-                            <p class="text-base">: Menengah</p>
-                            <p class="text-base">: Diterima</p>
+                            <p class="text-base">: {{ $data->no_surat }}</p>
+                            <p class="text-base">: {{ $data->created_at }}</p>
+                            <p class="text-base">: {{ $data->perihal }}</p>
+                            <p class="text-base capitalize">: {{ $data->skala_usaha }}</p>
+                            <p class="text-base capitalize">: {{ $data->status }}</p>
                         </div>
-
                     </div>
-
                     <div class="flex justify-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
-                        <button data-modal-toggle="defaultModal" type="button"
-                            class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Surat
-                            Diterima</button>
+                        @if ($data->skala_usaha === 'kecil')
+                            <a href="{{ url('user/upload-file/low/' . $data->id) }}"
+                                class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Lihat
+                                detail</a>
+                        @elseif ($data->skala_usaha === 'menengah')
+                            <a href="{{ url('user/upload-file/middle/' . $data->id) }}"
+                                class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Lihat
+                                detail</a>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
-
-    </div>
+    @endforeach
 @endsection
