@@ -12,6 +12,8 @@ class DashboardController extends Controller {
         $list_pengajuan = DB::table('pengajuan')->where('user_id', '=', Auth::id())->get();
         // Debugbar::info(DB::table('pengajuan')->where('user_id', '=', Auth::id())->get());
 
-        return view('user.dashboard')->with('pengajuan', $list_pengajuan);
+        return view('user.dashboard')
+            ->with('user', Auth::user())
+            ->with('pengajuan', $list_pengajuan);
     }
 }

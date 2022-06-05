@@ -6,13 +6,15 @@ use Carbon\Carbon;
 use App\Models\Pengajuan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class PengajuanController extends Controller
 {
     public function create()
     {
-        return view('user.create');
+        return view('user.create')
+            ->with('user', Auth::user());
     }
 
     public function store(Request $request)
@@ -41,9 +43,9 @@ class PengajuanController extends Controller
 
         // ? Redirect to input detail pengajuan (kecil/menengah)
         if ($request->input('tipe') === 'kecil') {
-            return redirect('/user/upload-file/low');
+            return redirect('/user/upload-file/low')->with('user', Auth::user());
         } else if ($request->input('tipe') === 'menengah') {
-            return redirect('/user/upload-file/middle');
+            return redirect('/user/upload-file/middle')->with('user', Auth::user());
         }
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PengajuanController;
@@ -18,51 +19,45 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 Route::get('/', function () {
     return redirect('auth/login');
-    // return view('auth/login');
 });
 
-Route::get('/auth/login', [AuthenticatedSessionController::class, 'create']);
-
-Route::post('/auth/login', [AuthenticatedSessionController::class, 'store']);
-
-Route::get('/auth/forgot-password', function() {
-    return view('auth/password/forgot');
+Route::middleware('guest')->prefix('auth')->group(function () {
+    Route::get('login', [AuthenticatedSessionController::class, 'create']);
+    Route::post('login', [AuthenticatedSessionController::class, 'store']);
+    Route::get('forgot-password', function() {
+        return view('auth.password.forgot');
+    });
+    Route::get('reset-password', function() {
+        return view('auth.password.reset');
+    });
+    Route::get('register', function() {
+        return view('auth.register');
+    });
 });
 
-Route::get('/auth/reset-password', function() {
-    return view('auth/password/reset');
+Route::middleware('auth')->prefix('user')->group(function () {
+    Route::get('dashboard', [DashboardController::class, 'create']);
+    Route::get('create-file', [PengajuanController::class, 'create']);
+    Route::post('create-file', [PengajuanController::class, 'store']);
+    Route::get('upload-file/low', function() {
+        return view('uploads.low')->with('user', Auth::user());
+    });
+    Route::get('upload-file/middle', function() {
+        return view('uploads.middle')->with('user', Auth::user());
+    });
+    Route::get('detail-file', function() {
+        return view('user.detail')->with('user', Auth::user());
+    });
 });
 
-Route::get('/auth/register', function() {
-    return view('auth/register');
-});
-
-Route::get('/user/dashboard', [DashboardController::class, 'create']);
-
-Route::get('/user/create-file', [PengajuanController::class, 'create']);
-
-Route::post('/user/create-file', [PengajuanController::class, 'store']);
-
-Route::get('/user/upload-file/low', function() {
-    return view('uploads/low');
-});
-
-Route::get('/user/upload-file/middle', function() {
-    return view('uploads/middle');
-});
-
-Route::get('/user/detail-file', function() {
-    return view('user/detail');
-});
-
-Route::get('/admin/dashboard', function() {
-    return view('admin/dashboard');
-});
-
-Route::get('/admin/detail', function() {
-    return view('admin/detail');
-});
-
-Route::get('/admin/berkas', function() {
-    return view('admin/berkas');
+Route::middleware('auth')->prefix('admin')->group(function () {
+    Route::get('/admin/dashboard', function() {
+        return view('admin.dashboard')->with('user', Auth::user());
+    });
+    Route::get('/admin/detail', function() {
+        return view('admin.detail')->with('user', Auth::user());
+    });
+    Route::get('/admin/berkas', function() {
+        return view('admin.berkas')->with('user', Auth::user());
+    });
 });
