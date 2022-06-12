@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDetailPengajuanTable extends Migration
+class CreateFileDetailPengajuanTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,7 @@ class CreateDetailPengajuanTable extends Migration
     {
         Schema::create('file_detail_pengajuan', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_pengajuan')->references('id')->on('pengajuan')->onUpdate('casacde')->onDelete('cascade');
+            $table->foreignId('id_pengajuan')->references('id')->on('pengajuan')->onUpdate('cascade')->onDelete('cascade');
             $table->string('jenis_file');
             $table->string('name');
             $table->string('type');
@@ -31,6 +31,6 @@ class CreateDetailPengajuanTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('detail_pengajuan');
+        Schema::dropIfExists('file_detail_pengajuan');
     }
 }

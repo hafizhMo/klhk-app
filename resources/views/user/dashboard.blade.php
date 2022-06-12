@@ -133,7 +133,7 @@
                             <p class="text-base">Skala Usaha</p>
                             <p class="text-base">Status</p>
                         </div>
-                        <div class="font-regular space-y-4 ">
+                        <div class="font-regular space-y-4">
                             <p class="text-base">: {{ $data->no_surat }}</p>
                             <p class="text-base">: {{ $data->created_at }}</p>
                             <p class="text-base">: {{ $data->perihal }}</p>
