@@ -15,12 +15,22 @@ use Illuminate\Support\Facades\Validator;
 
 class PengajuanController extends Controller
 {
+    /**
+     * * View for New Pengajuan
+     *
+     * @return void
+     */
     public function create()
     {
         return view('user.create')
             ->with('user', Auth::user());
     }
-
+    /**
+     * * Create New Pengajuan
+     *
+     * @param Request $request
+     * @return void
+     */
     public function store(Request $request)
     {
         if (!$request->has('tipe')) {
@@ -57,7 +67,12 @@ class PengajuanController extends Controller
                 ->with('user', Auth::user());
         }
     }
-
+    /**
+     * * View Lower Pengajuan by Id
+     *
+     * @param int $id
+     * @return void
+     */
     public function create_low($id)
     {
         $pengajuan = DB::table('pengajuan')
@@ -90,7 +105,13 @@ class PengajuanController extends Controller
             ->with('detail_pengajuan', $file)
             ->with('page_id', $id);
     }
-
+    /**
+     * * Store new Pengajuan by Lower Bussiness
+     *
+     * @param Request $request
+     * @param int $id
+     * @return void
+     */
     public function store_low(Request $request, $id)
     {
         $pengajuan = DB::table('pengajuan')
@@ -106,9 +127,9 @@ class PengajuanController extends Controller
         }
         // ! ===============================
 
-        // ! Return 404 if not Proposal for Middle
+        // ! Return 404 if not Proposal for Low
 
-        if ($pengajuan[0]->skala_usaha !== 'menengah') {
+        if ($pengajuan[0]->skala_usaha !== 'kecil') {
             return abort(404);
         }
 
@@ -116,95 +137,184 @@ class PengajuanController extends Controller
 
         $base_filename = Auth::id() . '_' . Carbon::now()->format('Y-m-d-H-i-s');
 
+        // ? Upload Surat Permohonan
         if ($request->hasFile('surat_permohonan')) {
             $file = $request->file('surat_permohonan');
             $filename = $base_filename . "." . $file->extension();
 
             $file->storeAs('pengajuan/' . Auth::id() . '/surat_permohonan', $filename);
 
-            DB::table('file_detail_pengajuan')
-                ->upsert(
-                    [
+            $surat_permohonan_availability = DB::table('file_detail_pengajuan')
+                ->where('id_pengajuan', '=', $pengajuan[0]->id)
+                ->where('jenis_file', '=', 'surat_permohonan')
+                ->get()
+                ->count();
+
+            if ($surat_permohonan_availability === 0) {
+                DB::table('file_detail_pengajuan')
+                    ->insert([
                         'id_pengajuan' => $pengajuan[0]->id,
                         'jenis_file' => 'surat_permohonan',
                         'name' => $filename,
                         'type' => $file->extension(),
-                        'size' => $file->getSize()
-                    ],
-                    'id'
-                );
+                        'size' => $file->getSize(),
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            } else {
+                DB::table('file_detail_pengajuan')
+                    ->where('id_pengajuan', '=', $id)
+                    ->update([
+                        'name' => $filename,
+                        'type' => $file->extension(),
+                        'size' => $file->getSize(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            }
         }
+
+        // ? Upload NIB
         if ($request->hasFile('nib')) {
             $file = $request->file('nib');
             $filename = $base_filename . "." . $file->extension();
 
             $file->storeAs('pengajuan/' . Auth::id() . '/nib', $filename);
 
-            DB::table('file_detail_pengajuan')
-                ->upsert(
-                    [
+            $nib_availability = DB::table('file_detail_pengajuan')
+                ->where('id_pengajuan', '=', $pengajuan[0]->id)
+                ->where('jenis_file', '=', 'nib')
+                ->get()
+                ->count();
+
+            if ($nib_availability === 0) {
+                DB::table('file_detail_pengajuan')
+                    ->insert([
                         'id_pengajuan' => $pengajuan[0]->id,
                         'jenis_file' => 'nib',
                         'name' => $filename,
                         'type' => $file->extension(),
-                        'size' => $file->getSize()
-                    ],
-                    'id'
-                );
+                        'size' => $file->getSize(),
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            } else {
+                DB::table('file_detail_pengajuan')
+                    ->where('id_pengajuan', '=', $id)
+                    ->update([
+                        'name' => $filename,
+                        'type' => $file->extension(),
+                        'size' => $file->getSize(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            }
         }
+
+        // ? Upload SPPL
         if ($request->hasFile('sppl')) {
             $file = $request->file('sppl');
             $filename = $base_filename . "." . $file->extension();
 
             $file->storeAs('pengajuan/' . Auth::id() . '/sppl', $filename);
 
-            DB::table('file_detail_pengajuan')
-                ->upsert(
-                    [
+            $sppl_availability = DB::table('file_detail_pengajuan')
+                ->where('id_pengajuan', '=', $pengajuan[0]->id)
+                ->where('jenis_file', '=', 'sppl')
+                ->get()
+                ->count();
+
+            if ($sppl_availability === 0) {
+                DB::table('file_detail_pengajuan')
+                    ->insert([
                         'id_pengajuan' => $pengajuan[0]->id,
                         'jenis_file' => 'sppl',
                         'name' => $filename,
                         'type' => $file->extension(),
-                        'size' => $file->getSize()
-                    ],
-                    'id'
-                );
+                        'size' => $file->getSize(),
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            } else {
+                DB::table('file_detail_pengajuan')
+                    ->where('id_pengajuan', '=', $id)
+                    ->update([
+                        'name' => $filename,
+                        'type' => $file->extension(),
+                        'size' => $file->getSize(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            }
         }
+
+        // ? Upload Surat Pernyataan Pengolahan
         if ($request->hasFile('surat_pernyataan_pengolahan')) {
             $file = $request->file('surat_pernyataan_pengolahan');
             $filename = $base_filename . "." . $file->extension();
 
             $file->storeAs('pengajuan/' . Auth::id() . '/surat_pernyataan_pengolahan', $filename);
 
-            DB::table('file_detail_pengajuan')
-                ->upsert(
-                    [
+            $surat_pernyataan_pengolahan_availability = DB::table('file_detail_pengajuan')
+                ->where('id_pengajuan', '=', $pengajuan[0]->id)
+                ->where('jenis_file', '=', 'surat_pernyataan_pengolahan')
+                ->get()
+                ->count();
+
+            if ($surat_pernyataan_pengolahan_availability === 0) {
+                DB::table('file_detail_pengajuan')
+                    ->insert([
                         'id_pengajuan' => $pengajuan[0]->id,
                         'jenis_file' => 'surat_pernyataan_pengolahan',
                         'name' => $filename,
                         'type' => $file->extension(),
-                        'size' => $file->getSize()
-                    ],
-                    'id'
-                );
+                        'size' => $file->getSize(),
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            } else {
+                DB::table('file_detail_pengajuan')
+                    ->where('id_pengajuan', '=', $id)
+                    ->update([
+                        'name' => $filename,
+                        'type' => $file->extension(),
+                        'size' => $file->getSize(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            }
         }
+
+        // ? Upload Pernyataan OSS
         if ($request->hasFile('pernyataan_oss')) {
             $file = $request->file('pernyataan_oss');
             $filename = $base_filename . "." . $file->extension();
 
             $file->storeAs('pengajuan/' . Auth::id() . '/pernyataan_oss', $filename);
 
-            DB::table('file_detail_pengajuan')
-                ->upsert(
-                    [
+            $pernyataan_oss_availability = DB::table('file_detail_pengajuan')
+                ->where('id_pengajuan', '=', $pengajuan[0]->id)
+                ->where('jenis_file', '=', 'pernyataan_oss')
+                ->get()
+                ->count();
+
+            if ($pernyataan_oss_availability === 0) {
+                DB::table('file_detail_pengajuan')
+                    ->insert([
                         'id_pengajuan' => $pengajuan[0]->id,
                         'jenis_file' => 'pernyataan_oss',
                         'name' => $filename,
                         'type' => $file->extension(),
-                        'size' => $file->getSize()
-                    ],
-                    'id'
-                );
+                        'size' => $file->getSize(),
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            } else {
+                DB::table('file_detail_pengajuan')
+                    ->where('id_pengajuan', '=', $id)
+                    ->update([
+                        'name' => $filename,
+                        'type' => $file->extension(),
+                        'size' => $file->getSize(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            }
         }
 
         $file = DB::table('file_detail_pengajuan')
@@ -216,7 +326,12 @@ class PengajuanController extends Controller
             ->with('detail_pengajuan', $file)
             ->with('page_id', $id);
     }
-
+    /**
+     * * View for Pengajuan for Middle Bussiness
+     *
+     * @param int $id
+     * @return void
+     */
     public function create_middle($id)
     {
         $pengajuan = DB::table('pengajuan')
@@ -249,15 +364,19 @@ class PengajuanController extends Controller
             ->with('detail_pengajuan', $file)
             ->with('page_id', $id);
     }
-
+    /**
+     * * Create New Pengajuan for Middle Bussiness
+     *
+     * @param Request $request
+     * @param int $id
+     * @return void
+     */
     public function store_middle(Request $request, $id)
     {
         $pengajuan = DB::table('pengajuan')
             ->where('id', '=', $id)
             ->where('user_id', '=', Auth::id())
             ->get();
-
-        Debugbar::info($pengajuan);
 
         // ! Prevent url param brute force
         $available = $pengajuan->count();
@@ -277,149 +396,292 @@ class PengajuanController extends Controller
 
         $base_filename = Auth::id() . '_' . Carbon::now()->format('Y-m-d-H-i-s');
 
+        // ? Upload NIB
         if ($request->hasFile('nib')) {
             $file = $request->file('nib');
             $filename = $base_filename . "." . $file->extension();
 
             $file->storeAs('pengajuan/' . Auth::id() . '/nib', $filename);
 
-            DB::table('file_detail_pengajuan')
-                ->upsert(
-                    [
+            $nib_availability = DB::table('file_detail_pengajuan')
+                ->where('id_pengajuan', '=', $pengajuan[0]->id)
+                ->where('jenis_file', '=', 'nib')
+                ->get()
+                ->count();
+
+            if ($nib_availability === 0) {
+                DB::table('file_detail_pengajuan')
+                    ->insert([
                         'id_pengajuan' => $pengajuan[0]->id,
                         'jenis_file' => 'nib',
                         'name' => $filename,
                         'type' => $file->extension(),
-                        'size' => $file->getSize()
-                    ],
-                    'id'
-                );
+                        'size' => $file->getSize(),
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            } else {
+                DB::table('file_detail_pengajuan')
+                    ->where('id_pengajuan', '=', $id)
+                    ->update([
+                        'name' => $filename,
+                        'type' => $file->extension(),
+                        'size' => $file->getSize(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            }
         }
+
+        // ? Upload Akta
         if ($request->hasFile('akta')) {
             $file = $request->file('akta');
             $filename = $base_filename . "." . $file->extension();
 
             $file->storeAs('pengajuan/' . Auth::id() . '/akta', $filename);
 
-            DB::table('file_detail_pengajuan')
-                ->upsert(
-                    [
+            $akta_availability = DB::table('file_detail_pengajuan')
+                ->where('id_pengajuan', '=', $pengajuan[0]->id)
+                ->where('jenis_file', '=', 'akta')
+                ->get()
+                ->count();
+
+            if ($akta_availability === 0) {
+                DB::table('file_detail_pengajuan')
+                    ->insert([
                         'id_pengajuan' => $pengajuan[0]->id,
                         'jenis_file' => 'akta',
                         'name' => $filename,
                         'type' => $file->extension(),
-                        'size' => $file->getSize()
-                    ],
-                    'id'
-                );
+                        'size' => $file->getSize(),
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            } else {
+                DB::table('file_detail_pengajuan')
+                    ->where('id_pengajuan', '=', $id)
+                    ->update([
+                        'name' => $filename,
+                        'type' => $file->extension(),
+                        'size' => $file->getSize(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            }
         }
+
+        // ? Upload SPPL
         if ($request->hasFile('sppl')) {
             $file = $request->file('sppl');
             $filename = $base_filename . "." . $file->extension();
 
             $file->storeAs('pengajuan/' . Auth::id() . '/sppl', $filename);
 
-            DB::table('file_detail_pengajuan')
-                ->upsert(
-                    [
+            $sppl_availability = DB::table('file_detail_pengajuan')
+                ->where('id_pengajuan', '=', $pengajuan[0]->id)
+                ->where('jenis_file', '=', 'sppl')
+                ->get()
+                ->count();
+
+            if ($sppl_availability === 0) {
+                DB::table('file_detail_pengajuan')
+                    ->insert([
                         'id_pengajuan' => $pengajuan[0]->id,
                         'jenis_file' => 'sppl',
                         'name' => $filename,
                         'type' => $file->extension(),
-                        'size' => $file->getSize()
-                    ],
-                    'id'
-                );
+                        'size' => $file->getSize(),
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            } else {
+                DB::table('file_detail_pengajuan')
+                    ->where('id_pengajuan', '=', $id)
+                    ->update([
+                        'name' => $filename,
+                        'type' => $file->extension(),
+                        'size' => $file->getSize(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            }
         }
+
+        // ? Upload Proposal
         if ($request->hasFile('proposal')) {
             $file = $request->file('proposal');
             $filename = $base_filename . "." . $file->extension();
 
             $file->storeAs('pengajuan/' . Auth::id() . '/proposal', $filename);
 
-            DB::table('file_detail_pengajuan')
-                ->upsert(
-                    [
+            $proposal_availability = DB::table('file_detail_pengajuan')
+                ->where('id_pengajuan', '=', $pengajuan[0]->id)
+                ->where('jenis_file', '=', 'proposal')
+                ->get()
+                ->count();
+
+            if ($proposal_availability === 0) {
+                DB::table('file_detail_pengajuan')
+                    ->insert([
                         'id_pengajuan' => $pengajuan[0]->id,
                         'jenis_file' => 'proposal',
                         'name' => $filename,
                         'type' => $file->extension(),
-                        'size' => $file->getSize()
-                    ],
-                    'id'
-                );
+                        'size' => $file->getSize(),
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            } else {
+                DB::table('file_detail_pengajuan')
+                    ->where('id_pengajuan', '=', $id)
+                    ->update([
+                        'name' => $filename,
+                        'type' => $file->extension(),
+                        'size' => $file->getSize(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            }
         }
+
+        // ? Upload Jaminan Pasokan
         if ($request->hasFile('jaminan_pasokan')) {
             $file = $request->file('jaminan_pasokan');
             $filename = $base_filename . "." . $file->extension();
 
             $file->storeAs('pengajuan/' . Auth::id() . '/jaminan_pasokan', $filename);
 
-            DB::table('file_detail_pengajuan')
-                ->upsert(
-                    [
+            $jaminan_pasokan_availability = DB::table('file_detail_pengajuan')
+                ->where('id_pengajuan', '=', $pengajuan[0]->id)
+                ->where('jenis_file', '=', 'jaminan_pasokan')
+                ->get()
+                ->count();
+
+            if ($jaminan_pasokan_availability === 0) {
+                DB::table('file_detail_pengajuan')
+                    ->insert([
                         'id_pengajuan' => $pengajuan[0]->id,
                         'jenis_file' => 'jaminan_pasokan',
                         'name' => $filename,
                         'type' => $file->extension(),
-                        'size' => $file->getSize()
-                    ],
-                    'id'
-                );
+                        'size' => $file->getSize(),
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            } else {
+                DB::table('file_detail_pengajuan')
+                    ->where('id_pengajuan', '=', $id)
+                    ->update([
+                        'name' => $filename,
+                        'type' => $file->extension(),
+                        'size' => $file->getSize(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            }
         }
+
+        // ? Upload Bukti Mesin
         if ($request->hasFile('bukti_mesin')) {
             $file = $request->file('bukti_mesin');
             $filename = $base_filename . "." . $file->extension();
 
             $file->storeAs('pengajuan/' . Auth::id() . '/bukti_mesin', $filename);
 
-            DB::table('file_detail_pengajuan')
-                ->upsert(
-                    [
+            $bukti_mesin_availability = DB::table('file_detail_pengajuan')
+                ->where('id_pengajuan', '=', $pengajuan[0]->id)
+                ->where('jenis_file', '=', 'bukti_mesin')
+                ->get()
+                ->count();
+
+            if ($bukti_mesin_availability === 0) {
+                DB::table('file_detail_pengajuan')
+                    ->insert([
                         'id_pengajuan' => $pengajuan[0]->id,
                         'jenis_file' => 'bukti_mesin',
                         'name' => $filename,
                         'type' => $file->extension(),
-                        'size' => $file->getSize()
-                    ],
-                    'id'
-                );
+                        'size' => $file->getSize(),
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            } else {
+                DB::table('file_detail_pengajuan')
+                    ->where('id_pengajuan', '=', $id)
+                    ->update([
+                        'name' => $filename,
+                        'type' => $file->extension(),
+                        'size' => $file->getSize(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            }
         }
+
+        // ? Upload Bukti Prasarana
         if ($request->hasFile('bukti_prasarana')) {
             $file = $request->file('bukti_prasarana');
             $filename = $base_filename . "." . $file->extension();
 
             $file->storeAs('pengajuan/' . Auth::id() . '/bukti_prasarana', $filename);
 
-            DB::table('file_detail_pengajuan')
-                ->upsert(
-                    [
+            $bukti_prasarana_availability = DB::table('file_detail_pengajuan')
+                ->where('id_pengajuan', '=', $pengajuan[0]->id)
+                ->where('jenis_file', '=', 'bukti_prasarana')
+                ->get()
+                ->count();
+
+            if ($bukti_prasarana_availability === 0) {
+                DB::table('file_detail_pengajuan')
+                    ->insert([
                         'id_pengajuan' => $pengajuan[0]->id,
                         'jenis_file' => 'bukti_prasarana',
                         'name' => $filename,
                         'type' => $file->extension(),
-                        'size' => $file->getSize()
-                    ],
-                    'id'
-                );
+                        'size' => $file->getSize(),
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            } else {
+                DB::table('file_detail_pengajuan')
+                    ->where('id_pengajuan', '=', $id)
+                    ->update([
+                        'name' => $filename,
+                        'type' => $file->extension(),
+                        'size' => $file->getSize(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            }
         }
+
+        // ? Upload Dokumen TKP
         if ($request->hasFile('dokumen_tkp')) {
             $file = $request->file('dokumen_tkp');
             $filename = $base_filename . "." . $file->extension();
 
             $file->storeAs('pengajuan/' . Auth::id() . '/dokumen_tkp', $filename);
 
-            DB::table('file_detail_pengajuan')
-                ->upsert(
-                    [
+            $dokumen_tkp_availability = DB::table('file_detail_pengajuan')
+                ->where('id_pengajuan', '=', $pengajuan[0]->id)
+                ->where('jenis_file', '=', 'dokumen_tkp')
+                ->get()
+                ->count();
+
+            if ($dokumen_tkp_availability === 0) {
+                DB::table('file_detail_pengajuan')
+                    ->insert([
                         'id_pengajuan' => $pengajuan[0]->id,
                         'jenis_file' => 'dokumen_tkp',
                         'name' => $filename,
                         'type' => $file->extension(),
-                        'size' => $file->getSize()
-                    ],
-                    'id'
-                );
+                        'size' => $file->getSize(),
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            } else {
+                DB::table('file_detail_pengajuan')
+                    ->where('id_pengajuan', '=', $id)
+                    ->update([
+                        'name' => $filename,
+                        'type' => $file->extension(),
+                        'size' => $file->getSize(),
+                        'updated_at' => Carbon::now()
+                    ]);
+            }
         }
 
         $file = DB::table('file_detail_pengajuan')
@@ -431,7 +693,12 @@ class PengajuanController extends Controller
             ->with('detail_pengajuan', $file)
             ->with('page_id', $id);
     }
-
+    /**
+     * * Access file from URL
+     *
+     * @param string $filename
+     * @return void
+     */
     public function create_file($filename)
     {
         $file = DB::table('pengajuan')
