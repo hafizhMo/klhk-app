@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
                     'email' => 'user@mail.com',
                     'email_verified_at' => now(),
                     'password' => Hash::make('12345678'),
+                    'role' => 'user',
                     'remember_token' => Str::random(10),
                     'created_at' => now(),
                     'updated_at' => now()
@@ -36,6 +37,7 @@ class DatabaseSeeder extends Seeder
                     'email' => 'berkas@mail.com',
                     'email_verified_at' => now(),
                     'password' => Hash::make('12345678'),
+                    'role' => 'penelaah_berkas',
                     'remember_token' => Str::random(10),
                     'created_at' => now(),
                     'updated_at' => now()
@@ -46,6 +48,7 @@ class DatabaseSeeder extends Seeder
                     'email' => 'pbphh@mail.com',
                     'email_verified_at' => now(),
                     'password' => Hash::make('12345678'),
+                    'role' => 'pbphh',
                     'remember_token' => Str::random(10),
                     'created_at' => now(),
                     'updated_at' => now()
@@ -56,6 +59,7 @@ class DatabaseSeeder extends Seeder
                     'email' => 'phpl@mail.com',
                     'email_verified_at' => now(),
                     'password' => Hash::make('12345678'),
+                    'role' => 'kabid_phpl',
                     'remember_token' => Str::random(10),
                     'created_at' => now(),
                     'updated_at' => now()
@@ -66,6 +70,7 @@ class DatabaseSeeder extends Seeder
                     'email' => 'kadin@mail.com',
                     'email_verified_at' => now(),
                     'password' => Hash::make('12345678'),
+                    'role' => 'kadin',
                     'remember_token' => Str::random(10),
                     'created_at' => now(),
                     'updated_at' => now()

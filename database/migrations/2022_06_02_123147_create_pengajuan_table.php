@@ -21,6 +21,7 @@ class CreatePengajuanTable extends Migration
             $table->string('perihal');
             $table->char('skala_usaha');
             $table->char('status');
+            $table->char('current_approver')->nullable();
             $table->timestamps();
         });
     }

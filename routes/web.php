@@ -44,7 +44,8 @@ Route::middleware('auth')->prefix('user')->group(function () {
     Route::post('upload-file/low/{id}', [PengajuanController::class, 'store_low']);
     Route::get('upload-file/middle/{id}', [PengajuanController::class, 'create_middle']);
     Route::post('upload-file/middle/{id}', [PengajuanController::class, 'store_middle']);
-    Route::get('detail-file/{filename}', [PengajuanController::class, 'create_file']);
+    Route::get('detail-file/{id}/{filename}', [PengajuanController::class, 'create_file']);
+    Route::post('detail-file/{id}/{filename}', [PengajuanController::class, 'store_file']);
 });
 
 Route::middleware('auth')->prefix('admin')->group(function () {

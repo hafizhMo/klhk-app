@@ -51,38 +51,39 @@ $input = [
 ];
 
 foreach ($detail_pengajuan as $value) {
+    $url = $value->id_pengajuan . '/' . $value->name;
     switch ($value->jenis_file) {
         case 'nib':
             $input[0]->available = true;
-            $input[0]->url = $value->name;
+            $input[0]->url = $url;
             break;
         case 'akta':
             $input[1]->available = true;
-            $input[1]->url = $value->name;
+            $input[1]->url = $url;
             break;
         case 'sppl':
             $input[2]->available = true;
-            $input[2]->url = $value->name;
+            $input[2]->url = $url;
             break;
         case 'proposal':
             $input[3]->available = true;
-            $input[3]->url = $value->name;
+            $input[3]->url = $url;
             break;
         case 'jaminan_pasokan':
             $input[4]->available = true;
-            $input[4]->url = $value->name;
+            $input[4]->url = $url;
             break;
         case 'bukti_mesin':
             $input[5]->available = true;
-            $input[5]->url = $value->name;
+            $input[5]->url = $url;
             break;
         case 'bukti_prasarana':
             $input[6]->available = true;
-            $input[6]->url = $value->name;
+            $input[6]->url = $url;
             break;
         case 'dokumen_tkp':
             $input[7]->available = true;
-            $input[7]->url = $value->name;
+            $input[7]->url = $url;
             break;
     }
 }

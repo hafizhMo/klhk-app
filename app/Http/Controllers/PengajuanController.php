@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use App\Models\Pengajuan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\FileDetailPengajuan;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -321,7 +320,7 @@ class PengajuanController extends Controller
             ->where('id_pengajuan', '=', $id)
             ->get();
 
-        return view('uploads.low')
+        return back()
             ->with('user', Auth::user())
             ->with('detail_pengajuan', $file)
             ->with('page_id', $id);
@@ -688,7 +687,7 @@ class PengajuanController extends Controller
             ->where('id_pengajuan', '=', $id)
             ->get();
 
-        return view('uploads.middle')
+        return back()
             ->with('user', Auth::user())
             ->with('detail_pengajuan', $file)
             ->with('page_id', $id);
@@ -696,16 +695,24 @@ class PengajuanController extends Controller
     /**
      * * Access file from URL
      *
+     * @param int $id
      * @param string $filename
      * @return void
      */
-    public function create_file($filename)
+    public function create_file($id, $filename)
     {
         $file = DB::table('pengajuan')
             ->join('file_detail_pengajuan', 'file_detail_pengajuan.id_pengajuan', 'pengajuan.id')
             ->where('pengajuan.user_id', '=', Auth::id())
             ->where('file_detail_pengajuan.name', '=', $filename)
             ->get();
+
+        $komentar = DB::table('komentar_file_pengajuan')
+            ->join('users', 'users.id', 'komentar_file_pengajuan.user_id')
+            ->where('id_file_pengajuan', '=', $file[0]->id)
+            ->get();
+
+        Debugbar::log($komentar);
 
         if (count($file) === 0) {
             abort(404);
@@ -716,6 +723,36 @@ class PengajuanController extends Controller
 
         return view('user.detail')
             ->with('user', Auth::user())
+            ->with('id', $id)
+            ->with('filename', $filename)
+            ->with('komentar', $komentar)
             ->with('attachment', base64_encode($file_bin));
+    }
+    /**
+     * * Add comment to document
+     *
+     * @param int $id
+     * @param string $filename
+     * @return void
+     */
+    public function store_file($id, $filename, Request $request) {
+        $request->validate([
+            'komentar' => 'required'
+        ]);
+
+        $file = DB::table('pengajuan')
+            ->join('file_detail_pengajuan', 'file_detail_pengajuan.id_pengajuan', 'pengajuan.id')
+            ->where('pengajuan.user_id', '=', Auth::id())
+            ->where('file_detail_pengajuan.name', '=', $filename)
+            ->get();
+
+        DB::table('komentar_file_pengajuan')
+            ->insert([
+                'id_file_pengajuan' => $file[0]->id,
+                'user_id' => Auth::id(),
+                'komentar' => $request->input('komentar')
+            ]);
+
+        return back();
     }
 }
