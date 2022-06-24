@@ -43,7 +43,7 @@
     <div class="flex w-full h-screen">
         <div class="w-1/5 bg-green-700 p-6">
             <p class="text-gray-300 text-xs">MENU</p>
-            <a href="#" class="flex flex-wrap bg-green-800 text-white items-center mt-2 p-2 hover:bg-green-600">
+            <a href="{{ url('user/dashboard') }}" class="flex flex-wrap bg-green-800 text-white items-center mt-2 p-2 hover:bg-green-600">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd"
                         d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H5zm9 4a1 1 0 10-2 0v6a1 1 0 102 0V7zm-3 2a1 1 0 10-2 0v4a1 1 0 102 0V9zm-3 3a1 1 0 10-2 0v1a1 1 0 102 0v-1z"
@@ -51,6 +51,10 @@
                 </svg>
                 <h2 class="ml-1 font-semibold text-sm">Dashboard</h2>
             </a>
+            <form action="{{ url('/user/logout') }}" method="post">
+                @csrf
+                <button type="submit" class="flex flex-wrap bg-green-800 text-white items-center mt-2 p-2 hover:bg-green-600">Logout</button>
+            </form>
         </div>
 
         <div class="w-full py-4 px-6">

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use Illuminate\Session\Middleware\AuthenticateSession;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,6 +47,7 @@ Route::middleware('auth')->prefix('user')->group(function () {
     Route::post('upload-file/middle/{id}', [PengajuanController::class, 'store_middle']);
     Route::get('detail-file/{id}/{filename}', [PengajuanController::class, 'create_file']);
     Route::post('detail-file/{id}/{filename}', [PengajuanController::class, 'store_file']);
+    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 });
 
 Route::middleware('auth')->prefix('admin')->group(function () {
@@ -58,4 +60,5 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/admin/berkas', function() {
         return view('admin.berkas')->with('user', Auth::user());
     });
+    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 });
