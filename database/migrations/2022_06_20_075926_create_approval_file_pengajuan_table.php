@@ -15,8 +15,9 @@ class CreateApprovalFilePengajuanTable extends Migration
     {
         Schema::create('approval_file_pengajuan', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('id_file_pengajuan')->references('id')->on('file_detail_pengajuan')->onUpdate('no action')->onDelete('no action');
             $table->foreignId('user_id')->references('id')->on('users')->onUpdate('no action')->onDelete('no action');
-            $table->boolean('status')->nullable();
+            $table->char('status')->nullable();
             $table->timestamps();
         });
     }

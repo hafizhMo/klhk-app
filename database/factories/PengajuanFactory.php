@@ -22,7 +22,7 @@ class PengajuanFactory extends Factory
             'no_surat' => '552/' . self::$no_surat++ . '/123.4/' . Carbon::now()->format('Y'),
             'perihal' => $this->faker->text(rand(30, 200)),
             'skala_usaha' => $this->faker->randomElement(['kecil', 'menengah']),
-            'status' => 'pending'
+            'status' => 'not submitted'
         ];
     }
 }

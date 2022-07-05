@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use Illuminate\Session\Middleware\AuthenticateSession;
+use App\Http\Controllers\Pengajuan\Low\LowPengajuanController;
+use App\Http\Controllers\Pengajuan\File\FilePengajuanController;
+use App\Http\Controllers\Pengajuan\Middle\MiddlePengajuanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,24 +43,29 @@ Route::middleware('auth')->prefix('user')->group(function () {
     Route::get('dashboard', [DashboardController::class, 'create']);
     Route::get('create-file', [PengajuanController::class, 'create']);
     Route::post('create-file', [PengajuanController::class, 'store']);
-    Route::get('upload-file/low/{id}', [PengajuanController::class, 'create_low']);
-    Route::post('upload-file/low/{id}', [PengajuanController::class, 'store_low']);
-    Route::get('upload-file/middle/{id}', [PengajuanController::class, 'create_middle']);
-    Route::post('upload-file/middle/{id}', [PengajuanController::class, 'store_middle']);
-    Route::get('detail-file/{id}/{filename}', [PengajuanController::class, 'create_file']);
-    Route::post('detail-file/{id}/{filename}', [PengajuanController::class, 'store_file']);
-    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
+    Route::get('upload-file/low/{id}', [LowPengajuanController::class, 'create']);
+    Route::post('upload-file/low/{id}', [LowPengajuanController::class, 'store']);
+    Route::post('upload-file/low/{id}/send', [LowPengajuanController::class, 'send']);
+    Route::post('upload-file/low/{id}/approve', [LowPengajuanController::class, 'approve']);
+    Route::get('upload-file/middle/{id}', [MiddlePengajuanController::class, 'create']);
+    Route::post('upload-file/middle/{id}', [MiddlePengajuanController::class, 'store']);
+    Route::post('upload-file/middle/{id}/send', [MiddlePengajuanController::class, 'send']);
+    Route::post('upload-file/middle/{id}/approve', [MiddlePengajuanController::class, 'approve']);
+    Route::get('detail-file/{id}/{filename}', [FilePengajuanController::class, 'create']);
+    Route::post('detail-file/{id}/{filename}/komentar', [FilePengajuanController::class, 'store_komentar']);
+    Route::post('detail-file/{id}/{filename}/approve', [FilePengajuanController::class, 'approve']);
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy']);
 });
 
-Route::middleware('auth')->prefix('admin')->group(function () {
-    Route::get('/admin/dashboard', function() {
-        return view('admin.dashboard')->with('user', Auth::user());
-    });
-    Route::get('/admin/detail', function() {
-        return view('admin.detail')->with('user', Auth::user());
-    });
-    Route::get('/admin/berkas', function() {
-        return view('admin.berkas')->with('user', Auth::user());
-    });
-    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
-});
+// Route::middleware('auth')->prefix('admin')->group(function () {
+//     Route::get('dashboard', function() {
+//         return view('admin.dashboard')->with('user', Auth::user());
+//     });
+//     Route::get('detail', function() {
+//         return view('admin.detail')->with('user', Auth::user());
+//     });
+//     Route::get('berkas', function() {
+//         return view('admin.berkas')->with('user', Auth::user());
+//     });
+//     Route::post('logout', [AuthenticatedSessionController::class, 'destroy']);
+// });
