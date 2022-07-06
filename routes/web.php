@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\PengajuanController;
+use App\Http\Controllers\Pengajuan\PengajuanController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Pengajuan\Low\LowPengajuanController;
 use App\Http\Controllers\Pengajuan\File\FilePengajuanController;
