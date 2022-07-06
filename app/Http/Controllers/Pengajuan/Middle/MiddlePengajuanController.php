@@ -9,10 +9,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Providers\UserRoleProvider;
 use App\Http\Controllers\Controller;
-use App\Providers\JenisFilePengajuanProvider;
-use App\Providers\StatusPengajuanProvider;
-use Debugbar;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\Debugbar\Facades\Debugbar;
+use App\Providers\StatusPengajuanProvider;
+use App\Providers\JenisFilePengajuanProvider;
 
 
 class MiddlePengajuanController extends Controller
