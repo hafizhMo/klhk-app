@@ -49,6 +49,7 @@ class PengajuanController extends Controller
             ->where('created_at', '=', Carbon::now())->count() + 1;
 
         $pengajuan = new Pengajuan;
+        $pengajuan->user_id = Auth::id();
         $pengajuan->nama_pengajuan = $request->input('nama_pengajuan');
         $pengajuan->no_surat = '552/' . $total_today_pengajuan_count . '/123.4/' . Carbon::now()->format('Y');
         $pengajuan->perihal = $request->input('perihal');
