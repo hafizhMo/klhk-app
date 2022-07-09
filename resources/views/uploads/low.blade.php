@@ -102,7 +102,7 @@ foreach ($detail_pengajuan as $value) {
                 </form>
             @endif
         @else
-            @if ($status !== 'pending')
+            @if ($status === 'pending' || $status === 'ditolak')
                 <form action="{{ url('user/upload-file/low/' . $page_id . '/approve?status=ditolak') }}" method="post">
                     @csrf
                     <button

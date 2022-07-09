@@ -155,8 +155,6 @@ class FilePengajuanController extends Controller
                 ->where('name', '=', $filename)
                 ->get();
 
-            dd($approval_file_availability);
-
             if ($approval_file_availability->count() !== 0) {
                 DB::table('approval_file_pengajuan')
                     ->where('id_file_pengajuan', '=', $id_file[0]->id)
