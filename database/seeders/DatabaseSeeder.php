@@ -78,6 +78,6 @@ class DatabaseSeeder extends Seeder
             ]
         );
         // Pengajuan
-        Pengajuan::factory()->count(10)->create();
+        // Pengajuan::factory()->count(10)->create();
     }
 }

@@ -22,6 +22,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|ApprovalPengajuan whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ApprovalPengajuan whereUserId($value)
  * @mixin \Eloquent
+ * @property int $id_pengajuan
+ * @method static \Illuminate\Database\Eloquent\Builder|ApprovalPengajuan whereIdPengajuan($value)
  */
 class ApprovalPengajuan extends Model
 {

@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|KomentarFilePengajuan whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|KomentarFilePengajuan whereUserId($value)
  * @mixin \Eloquent
+ * @property int $id_file_pengajuan
+ * @method static \Illuminate\Database\Eloquent\Builder|KomentarFilePengajuan whereIdFilePengajuan($value)
  */
 class KomentarFilePengajuan extends Model
 {

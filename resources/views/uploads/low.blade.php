@@ -90,6 +90,23 @@ foreach ($detail_pengajuan as $value) {
                     </td>
                 </tr>
             @endfor
+            @if ($file_penolakan !== null)
+                <tr class="bg-white border-b text-center">
+                    <td class="px-6 py-4"></td>
+                    <td class="px-6 py-4 text-left">Surat Penolakan</td>
+                    <td class="px-6 py-4">
+                        <button type="button" data-modal-toggle="suratPenolakanModal">
+                            <svg class="w-6 h-6 text-gray-700 hover:text-gray-500" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z">
+                                </path>
+                                <path d="M9 13h2v5a1 1 0 11-2 0v-5z"></path>
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+            @endif
         </tbody>
     </table>
     <div class="flex place-content-center">
@@ -102,17 +119,11 @@ foreach ($detail_pengajuan as $value) {
                 </form>
             @endif
         @else
-            @if ($status === 'pending' || $status === 'ditolak')
-                <form action="{{ url('user/upload-file/low/' . $page_id . '/approve?status=ditolak') }}" method="post">
-                    @csrf
-                    <button
-                        class="mt-8 text-white bg-red-700 hover:bg-red-800 font-medium rounded-lg text-sm px-12 py-2.5">Tolak</button>
-                </form>
-                <form action="{{ url('user/upload-file/low/' . $page_id . '/approve?status=diterima') }}" method="post">
-                    @csrf
-                    <button
-                        class="mt-8 text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-12 py-2.5">Terima</button>
-                </form>
+            @if ($status === 'pending')
+                <button class="mt-8 text-white bg-red-700 hover:bg-red-800 font-medium rounded-lg text-sm px-12 py-2.5"
+                    data-modal-toggle="tolakPengajuanModal">Tolak</button>
+                <button class="mt-8 text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-12 py-2.5"
+                    data-modal-toggle="terimaPengajuanModal">Terima</button>
             @endif
         @endif
     </div>
@@ -212,6 +223,125 @@ foreach ($detail_pengajuan as $value) {
             </div>
         </div>
     @endforeach
+    @if ($user->role !== 'user')
+        <div id="tolakPengajuanModal" tabindex="-1" aria-hidden="true"
+            class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">
+            <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
+                <!-- Modal content -->
+                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                    <div class="flex justify-between items-start p-4 rounded-t border-b dark:border-gray-600">
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                            Tolak pengajuan ini?
+                        </h3>
+                        <button type="button"
+                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                            data-modal-toggle="tolakPengajuanModal">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <form action="{{ url('user/upload-file/low/' . $page_id . '/approve?status=ditolak') }}"
+                        class="relative bg-white rounded-lg shadow dark:bg-gray-700" method="post"
+                        enctype="multipart/form-data">
+                        @csrf
+                        <div class="p-6 space-y-6">
+                            <input type="file" name="surat_penolakan" id="surat_penolakan" accept="application/pdf"
+                                required>
+                        </div>
+                        <div
+                            class="flex items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
+                            <button type="submit"
+                                class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">Tolak</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div id="terimaPengajuanModal" tabindex="-1" aria-hidden="true"
+            class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">
+            <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
+                <!-- Modal content -->
+                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                    <div class="flex justify-between items-start p-4 rounded-t border-b dark:border-gray-600">
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                            Terima pengajuan ini?
+                        </h3>
+                        <button type="button"
+                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                            data-modal-toggle="terimaPengajuanModal">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <form action="{{ url('user/upload-file/low/' . $page_id . '/approve?status=diterima') }}"
+                        class="relative bg-white rounded-lg shadow dark:bg-gray-700" method="post">
+                        @csrf
+                        <div class="p-6 space-y-6">
+                            <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                            </p>
+                        </div>
+                        <div
+                            class="flex items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
+                            <button type="submit"
+                                class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Terima</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endif
+    @if ($file_penolakan !== null)
+        <div id="suratPenolakanModal" tabindex="-1" aria-hidden="true"
+            class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-screen md:h-screen">
+            <div class="relative p-4 w-full h-full md:h-full">
+                <!-- Modal content -->
+                <div class="h-full w-full relative bg-white rounded-lg shadow dark:bg-gray-700">
+                    <div class="flex justify-between items-start p-4 rounded-t border-b dark:border-gray-600">
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                            Surat Penolakan
+                        </h3>
+                        <button type="button"
+                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                            data-modal-toggle="suratPenolakanModal">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="h-fit w-fit relative bg-white rounded-lg shadow dark:bg-gray-700">
+                        <div class="h-[75vh] w-[75vw] p-6 space-y-6">
+                            <object data="data:application/pdf;base64,{{ $file_penolakan }}" type="application/pdf"
+                                width="100%" height="100%">
+                                <iframe src="data:application/pdf;base64,{{ $file_penolakan }}" width="100%"
+                                    height="100%" style="border: none;">
+                                    This browser does not support PDFs. Please download the PDF to view it:
+                                    <p>This browser does not support inline PDFs. Please download the PDF to view it: <a
+                                            href="data:application/pdf;base64,{{ $file_penolakan }}">Download PDF</a>
+                                    </p>
+                                </iframe>
+                            </object>
+                        </div>
+                        <div
+                            class="flex items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
+                            <button data-modal-toggle="suratPenolakanModal" type="button"
+                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
     @if (Session::has('error'))
         <div id="errorModal" tabindex="-1" aria-hidden="true" data-modal-show="true"
             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">

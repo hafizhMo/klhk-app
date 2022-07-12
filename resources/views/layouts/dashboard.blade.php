@@ -7,8 +7,8 @@
 
     <title>Dinas Kehutanan Provinsi Jawa Timur</title>
 
-    <!-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> -->
-    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    {{-- <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet"> --}}
     <link rel="stylesheet" href="https://unpkg.com/flowbite@latest/dist/flowbite.min.css" />
     <script src="{{ mix('js/app.js') }}"></script>
     <script src="https://unpkg.com/flowbite@1.4.5/dist/flowbite.js"></script>
