@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Providers\StatusPengajuanProvider;
+use Barryvdh\Debugbar\Facades\Debugbar;
 
 class FilePengajuanController extends Controller
 {
@@ -46,7 +47,7 @@ class FilePengajuanController extends Controller
 
         $id_file = DB::table('file_detail_pengajuan')
             ->where('name', '=', $filename)
-            ->get(['id']);
+            ->get();
 
         // // TODO: Get latest approval
         // * Get latest approval
@@ -58,7 +59,7 @@ class FilePengajuanController extends Controller
             ->join('users', 'users.id', 'approval_file_pengajuan.user_id')
             ->where('approval_file_pengajuan.id_file_pengajuan', '=', $id_file[0]->id)
             ->where('users.role', '=', $current_approver[0]->current_approver)
-            ->get(['status']);
+            ->get();
 
         $path = 'pengajuan/' . $file[0]->user_id . '/' . $id . '/' . $file[0]->jenis_file . '/' . $file[0]->name;
         $file_bin = Storage::get($path);

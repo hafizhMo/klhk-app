@@ -65,23 +65,31 @@ class LowPengajuanController extends Controller
             ->where('id_pengajuan', '=', $id)
             ->get();
 
-        $file_penolakan_binary = null;
+        $file_approval_binary = null;
+        $already_approve = null;
         if ($approval_pengajuan->count() > 0) {
-            $file_penolakan = DB::table('file_approval_pengajuan')
+            $file_approval = DB::table('file_approval_pengajuan')
                 ->where('id_approval_pengajuan', $approval_pengajuan[0]->id_pengajuan)
                 ->get();
 
-            $file_path = 'approval_pengajuan/' . $id . '/' . $file_penolakan[0]->name;
+            $file_path = 'approval_pengajuan/' . $id . '/' . $file_approval[0]->name;
             if (Storage::exists($file_path)) {
-                $file_penolakan_binary = Storage::get($file_path);
+                $file_approval_binary = Storage::get($file_path);
             }
+
+            $already_approve = DB::table('approval_pengajuan')
+                ->join('users', 'users.id', 'approval_pengajuan.user_id')
+                ->where('users.role', '=', Auth::user()->role)
+                ->get()
+                ->count();
         }
 
         return view('uploads.low')
             ->with('user', Auth::user())
             ->with('detail_pengajuan', $file)
             ->with('status', $status[0]->status)
-            ->with('file_penolakan', base64_encode($file_penolakan_binary))
+            ->with('approved', $already_approve > 0 ? true : false)
+            ->with('file_approval', base64_encode($file_approval_binary))
             ->with('page_id', $id);
     }
     /**
@@ -128,14 +136,16 @@ class LowPengajuanController extends Controller
         // ? Upload Surat Permohonan
         if ($request->hasFile(JenisFilePengajuanProvider::SuratPermohonan)) {
             $file = $request->file(JenisFilePengajuanProvider::SuratPermohonan);
-            $filename = $base_filename . "." . $file->extension();
+            $filename = JenisFilePengajuanProvider::SuratPermohonan . '_' . $base_filename . "." . $file->extension();
 
             $file->storeAs($storagePathPengajuan . JenisFilePengajuanProvider::SuratPermohonan, $filename);
 
-            $surat_permohonan_availability = DB::table('file_detail_pengajuan')
+            $surat_permohonan = DB::table('file_detail_pengajuan')
                 ->where('id_pengajuan', '=', $pengajuan[0]->id)
                 ->where('jenis_file', '=', JenisFilePengajuanProvider::SuratPermohonan)
-                ->get()
+                ->get();
+
+            $surat_permohonan_availability = $surat_permohonan
                 ->count();
 
             if ($surat_permohonan_availability === 0) {
@@ -158,20 +168,24 @@ class LowPengajuanController extends Controller
                         'size' => $file->getSize(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                Storage::delete($storagePathPengajuan . JenisFilePengajuanProvider::SuratPermohonan . '/' . $surat_permohonan[0]->name);
             }
         }
 
         // ? Upload NIB
         if ($request->hasFile(JenisFilePengajuanProvider::NIB)) {
             $file = $request->file(JenisFilePengajuanProvider::NIB);
-            $filename = $base_filename . "." . $file->extension();
+            $filename = JenisFilePengajuanProvider::NIB . '_' . $base_filename . "." . $file->extension();
 
             $file->storeAs($storagePathPengajuan . JenisFilePengajuanProvider::NIB, $filename);
 
-            $nib_availability = DB::table('file_detail_pengajuan')
+            $nib = DB::table('file_detail_pengajuan')
                 ->where('id_pengajuan', '=', $pengajuan[0]->id)
                 ->where('jenis_file', '=', JenisFilePengajuanProvider::NIB)
-                ->get()
+                ->get();
+
+            $nib_availability = $nib
                 ->count();
 
             if ($nib_availability === 0) {
@@ -194,20 +208,24 @@ class LowPengajuanController extends Controller
                         'size' => $file->getSize(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                Storage::delete($storagePathPengajuan . JenisFilePengajuanProvider::NIB . '/' . $nib[0]->name);
             }
         }
 
         // ? Upload SPPL
         if ($request->hasFile(JenisFilePengajuanProvider::SPPL)) {
             $file = $request->file(JenisFilePengajuanProvider::SPPL);
-            $filename = $base_filename . "." . $file->extension();
+            $filename = JenisFilePengajuanProvider::SPPL . '_' . $base_filename . "." . $file->extension();
 
             $file->storeAs($storagePathPengajuan . JenisFilePengajuanProvider::SPPL, $filename);
 
-            $sppl_availability = DB::table('file_detail_pengajuan')
+            $sppl = DB::table('file_detail_pengajuan')
                 ->where('id_pengajuan', '=', $pengajuan[0]->id)
                 ->where('jenis_file', '=', JenisFilePengajuanProvider::SPPL)
-                ->get()
+                ->get();
+
+            $sppl_availability = $sppl
                 ->count();
 
             if ($sppl_availability === 0) {
@@ -230,20 +248,24 @@ class LowPengajuanController extends Controller
                         'size' => $file->getSize(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                Storage::delete($storagePathPengajuan . JenisFilePengajuanProvider::SPPL . '/' . $sppl[0]->name);
             }
         }
 
         // ? Upload Surat Pernyataan Pengolahan
         if ($request->hasFile(JenisFilePengajuanProvider::SuratPernyataan)) {
             $file = $request->file(JenisFilePengajuanProvider::SuratPernyataan);
-            $filename = $base_filename . "." . $file->extension();
+            $filename = JenisFilePengajuanProvider::SuratPernyataan . '_' . $base_filename . "." . $file->extension();
 
             $file->storeAs($storagePathPengajuan . JenisFilePengajuanProvider::SuratPernyataan, $filename);
 
-            $surat_pernyataan_availability = DB::table('file_detail_pengajuan')
+            $surat_pernyataan = DB::table('file_detail_pengajuan')
                 ->where('id_pengajuan', '=', $pengajuan[0]->id)
                 ->where('jenis_file', '=', JenisFilePengajuanProvider::SuratPernyataan)
-                ->get()
+                ->get();
+
+            $surat_pernyataan_availability = $surat_pernyataan
                 ->count();
 
             if ($surat_pernyataan_availability === 0) {
@@ -266,20 +288,24 @@ class LowPengajuanController extends Controller
                         'size' => $file->getSize(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                Storage::delete($storagePathPengajuan . JenisFilePengajuanProvider::SuratPernyataan . '/' . $surat_pernyataan[0]->name);
             }
         }
 
         // ? Upload Pernyataan OSS
         if ($request->hasFile(JenisFilePengajuanProvider::PenyataanMandiriOSS)) {
             $file = $request->file(JenisFilePengajuanProvider::PenyataanMandiriOSS);
-            $filename = $base_filename . "." . $file->extension();
+            $filename = JenisFilePengajuanProvider::PenyataanMandiriOSS . '_' . $base_filename . "." . $file->extension();
 
             $file->storeAs($storagePathPengajuan . '/' . JenisFilePengajuanProvider::PenyataanMandiriOSS, $filename);
 
-            $pernyataan_oss_availability = DB::table('file_detail_pengajuan')
+            $pernyataan_oss = DB::table('file_detail_pengajuan')
                 ->where('id_pengajuan', '=', $pengajuan[0]->id)
                 ->where('jenis_file', '=', JenisFilePengajuanProvider::PenyataanMandiriOSS)
-                ->get()
+                ->get();
+
+            $pernyataan_oss_availability = $pernyataan_oss
                 ->count();
 
             if ($pernyataan_oss_availability === 0) {
@@ -302,6 +328,8 @@ class LowPengajuanController extends Controller
                         'size' => $file->getSize(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                Storage::delete($storagePathPengajuan . '/' . JenisFilePengajuanProvider::PenyataanMandiriOSS . '/' . $pernyataan_oss[0]->name);
             }
         }
 
@@ -331,12 +359,8 @@ class LowPengajuanController extends Controller
         // ===================
         // ! Check required file has already uploaded
         //  ==================
-        $file_pengajuan = DB::table('file_detail_pengajuan')
-            ->where('id_pengajuan', '=', $id)
-            ->get()
+        $file_pengajuan = $file
             ->count();
-
-        Debugbar::info($file_pengajuan);
 
         if ($file_pengajuan !== JenisFilePengajuanProvider::JumlahJenisPengajuanBawah) {
             return back()
@@ -408,6 +432,20 @@ class LowPengajuanController extends Controller
         $statusQuery = $request->query('status');
 
         if ($statusQuery === 'diterima') {
+            $file = $request->file('surat_persetujuan');
+            /**
+             * ? Storage Path for Approval Pengajuan
+             */
+            $storagePathApprovalPengajuan = 'approval_pengajuan/' . $id . '/';
+            /**
+             * ? Basename for New uploaded Filename
+             *
+             * * [Format] = <User ID>_<Pengajuan ID>_<Year>-<Month>-<Day>-<Hour>-<Minute>-<Second>.<File Extension>
+             */
+            $base_filename = Auth::id() . '_' . $id . '_' . Carbon::now()->format('Y-m-d-H-i-s');
+
+            $filename = $base_filename . "." . $file->extension();
+
             $checkRejectedFile = DB::table('file_detail_pengajuan')
                 ->join('approval_file_pengajuan', 'approval_file_pengajuan.id_file_pengajuan', 'file_detail_pengajuan.id')
                 ->where('file_detail_pengajuan.id_pengajuan', '=', $id)
@@ -420,12 +458,25 @@ class LowPengajuanController extends Controller
                     ->with('error', 'Cek kembali file yang di-approve! Masih ada file yang ditolak!');
             }
 
-            $approval_pengajuan_availability = DB::table('approval_pengajuan')
+            if (!$request->hasFile('surat_penolakan')) {
+                return back()
+                    ->with('error', 'Butuh surat penolakan!');
+            }
+
+            $file->storeAs($storagePathApprovalPengajuan, $filename);
+
+            $approval_pengajuan = DB::table('approval_pengajuan')
                 ->where('id_pengajuan', '=', $id)
-                ->get()
+                ->get();
+
+            $approval_pengajuan_availability = $approval_pengajuan
                 ->count();
 
             if ($approval_pengajuan_availability > 0) {
+                $file_approval_pengajuan = DB::table('file_approval_pengajuan')
+                    ->where('id_approval_pengajuan', '=', $approval_pengajuan[0]->id)
+                    ->get();
+
                 DB::table('approval_pengajuan')
                     ->where('id_pengajuan', '=', $id)
                     ->update([
@@ -433,12 +484,33 @@ class LowPengajuanController extends Controller
                         'status' => StatusPengajuanProvider::Accepted,
                         'updated_at' => Carbon::now()
                     ]);
+                DB::table('file_approval_pengajuan')
+                    ->update([
+                        'id_approval_pengajuan' => $approval_pengajuan[0]->id,
+                        'name' => $filename,
+                        'type' => $file->extension(),
+                        'size' => $file->getSize(),
+                        'updated_at' => Carbon::now()
+                    ]);
+                Storage::delete($storagePathApprovalPengajuan . $file_approval_pengajuan[0]->name);
             } else {
                 DB::table('approval_pengajuan')
                     ->insert([
                         'id_pengajuan' => $id,
                         'user_id' => Auth::id(),
                         'status' => StatusPengajuanProvider::Accepted,
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now()
+                    ]);
+                $approval_pengajuan = DB::table('approval_pengajuan')
+                    ->where('id_pengajuan', '=', $id)
+                    ->get();
+                DB::table('file_approval_pengajuan')
+                    ->insert([
+                        'id_approval_pengajuan' => $approval_pengajuan[0]->id,
+                        'name' => $filename,
+                        'type' => $file->extension(),
+                        'size' => $file->getSize(),
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
@@ -455,8 +527,6 @@ class LowPengajuanController extends Controller
                         'status' => StatusPengajuanProvider::Accepted,
                         'current_approver' => null
                     ]);
-
-                Debugbar::log(UserRoleProvider::ApproverQueue[$indexCurrentApprover]);
 
                 return back();
             }
@@ -511,6 +581,10 @@ class LowPengajuanController extends Controller
 
             $approval_pengajuan_availability = $approval_pengajuan->count();
 
+            $file_approval_pengajuan = DB::table('file_approval_pengajuan')
+                ->where('id_approval_pengajuan', '=', $approval_pengajuan[0]->id)
+                ->get();
+
             if ($approval_pengajuan_availability > 0) {
                 DB::table('approval_pengajuan')
                     ->where('id_pengajuan', '=', $id)
@@ -524,6 +598,15 @@ class LowPengajuanController extends Controller
                     ->update([
                         'status' => StatusPengajuanProvider::Rejected
                     ]);
+                DB::table('file_approval_pengajuan')
+                    ->update([
+                        'id_approval_pengajuan' => $approval_pengajuan[0]->id,
+                        'name' => $filename,
+                        'type' => $file->extension(),
+                        'size' => $file->getSize(),
+                        'updated_at' => Carbon::now()
+                    ]);
+                Storage::delete($storagePathApprovalPengajuan . $file_approval_pengajuan[0]->name);
             } else {
                 DB::table('approval_pengajuan')
                     ->insert([
@@ -538,21 +621,16 @@ class LowPengajuanController extends Controller
                     ->update([
                         'status' => StatusPengajuanProvider::Rejected
                     ]);
+                DB::table('file_approval_pengajuan')
+                    ->insert([
+                        'id_approval_pengajuan' => $approval_pengajuan[0]->id,
+                        'name' => $filename,
+                        'type' => $file->extension(),
+                        'size' => $file->getSize(),
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now()
+                    ]);
             }
-
-            $approval_pengajuan = DB::table('approval_pengajuan')
-                ->where('id_pengajuan', '=', $id)
-                ->get();
-
-            DB::table('file_approval_pengajuan')
-                ->insert([
-                    'id_approval_pengajuan' => $approval_pengajuan[0]->id,
-                    'name' => $filename,
-                    'type' => $file->extension(),
-                    'size' => $file->getSize(),
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now()
-                ]);
             return back();
         } else {
             return abort(404);
