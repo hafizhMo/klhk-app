@@ -93,7 +93,8 @@ foreach ($detail_pengajuan as $value) {
             @if ($file_approval !== null)
                 <tr class="bg-white border-b text-center">
                     <td class="px-6 py-4"></td>
-                    <td class="px-6 py-4 text-left">{{ $status === 'ditolak' ? 'Surat Penolakan' : 'Surat Persetujuan' }}</td>
+                    <td class="px-6 py-4 text-left">{{ $status === 'ditolak' ? 'Surat Penolakan' : 'Surat Persetujuan' }}
+                    </td>
                     <td class="px-6 py-4">
                         <button type="button" data-modal-toggle="suratApprovalModal">
                             <svg class="w-6 h-6 text-gray-700 hover:text-gray-500" fill="currentColor" viewBox="0 0 20 20"
@@ -251,6 +252,7 @@ foreach ($detail_pengajuan as $value) {
                         <div class="p-6 space-y-6">
                             <input type="file" name="surat_penolakan" id="surat_penolakan" accept="application/pdf"
                                 required>
+                                <textarea name="komentar" id="komentar" cols="30" rows="10"></textarea>
                         </div>
                         <div
                             class="flex items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
@@ -286,8 +288,11 @@ foreach ($detail_pengajuan as $value) {
                         enctype="multipart/form-data">
                         @csrf
                         <div class="p-6 space-y-6">
-                            <input type="file" name="surat_persetujuan" id="surat_persetujuan"
-                                accept="application/pdf" required>
+                            @if ($user->role === 'kadin')
+                                <input type="file" name="surat_persetujuan" id="surat_persetujuan"
+                                    accept="application/pdf" required>
+                            @endif
+                            <textarea name="komentar" id="komentar" cols="30" rows="10"></textarea>
                         </div>
                         <div
                             class="flex items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">

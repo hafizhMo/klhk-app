@@ -18,6 +18,7 @@ class CreateApprovalPengajuanTable extends Migration
             $table->foreignId('id_pengajuan')->references('id')->on('pengajuan')->onUpdate('no action')->onDelete('no action');
             $table->foreignId('user_id')->references('id')->on('users')->onUpdate('no action')->onDelete('no action');
             $table->char('status')->nullable();
+            $table->string('komentar')->nullable();
             $table->timestamps();
         });
     }

@@ -48,6 +48,12 @@ $input = [
         'url' => '',
         'available' => false,
     ],
+    (object) [
+        'nama_input' => 'Berita Acara',
+        'input_id' => 'berita_acara',
+        'url' => '',
+        'available' => false,
+    ],
 ];
 
 foreach ($detail_pengajuan as $value) {
@@ -85,6 +91,10 @@ foreach ($detail_pengajuan as $value) {
             $input[7]->available = true;
             $input[7]->url = $url;
             break;
+        case 'berita_acara':
+            $input[8]->available = true;
+            $input[8]->url = $url;
+            break;
     }
 }
 @endphp
@@ -93,8 +103,8 @@ foreach ($detail_pengajuan as $value) {
 
 @section('content')
     <!-- <div class="flex">
-                                            <a href="{{ url('/user/dashboard') }}" class="flex-1 bg-gray-900 text-white px-3 py-2 text-base font-medium">Submit</a>
-                                        </div> -->
+                                                <a href="{{ url('/user/dashboard') }}" class="flex-1 bg-gray-900 text-white px-3 py-2 text-base font-medium">Submit</a>
+                                            </div> -->
     <h1 class="text-2xl">Pengajuan surat usaha skala menengah</h1>
     <hr class="mt-2">
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -132,7 +142,7 @@ foreach ($detail_pengajuan as $value) {
                     </td>
                 </tr>
             @endfor
-            @if ($file_approval !== "")
+            @if ($file_approval !== '')
                 <tr class="bg-white border-b text-center">
                     <td class="px-6 py-4"></td>
                     <td class="px-6 py-4 text-left">Surat Approval</td>
@@ -291,6 +301,7 @@ foreach ($detail_pengajuan as $value) {
                         <div class="p-6 space-y-6">
                             <input type="file" name="surat_penolakan" id="surat_penolakan" accept="application/pdf"
                                 required>
+                            <textarea name="komentar" id="komentar" cols="30" rows="10"></textarea>
                         </div>
                         <div
                             class="flex items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
@@ -325,8 +336,11 @@ foreach ($detail_pengajuan as $value) {
                         class="relative bg-white rounded-lg shadow dark:bg-gray-700" method="post">
                         @csrf
                         <div class="p-6 space-y-6">
-                            <input type="file" name="surat_persetujuan" id="surat_persetujuan" accept="application/pdf"
-                                required>
+                            @if ($user->role === 'kadin')
+                                <input type="file" name="surat_persetujuan" id="surat_persetujuan"
+                                    accept="application/pdf" required>
+                            @endif
+                            <textarea name="komentar" id="komentar" cols="30" rows="10"></textarea>
                         </div>
                         <div
                             class="flex items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">

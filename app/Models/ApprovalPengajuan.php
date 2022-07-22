@@ -41,7 +41,8 @@ class ApprovalPengajuan extends Model
      * @var array $fillable
      */
     protected $fillable = [
-        'status'
+        'status',
+        'komentar'
     ];
 
     protected $casts = [

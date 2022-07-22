@@ -60,4 +60,8 @@ abstract class JenisFilePengajuanProvider
      * ? Dokumen tenaga kerja professional bersertifikat atau pernyataan komitmen pemenuhan tenaga teknis profesional bersertifikat
      */
     const DokumenTenagaKerjaProfesional = 'dokumen_tkp';
+    /**
+     * ? Berita acara pengajuan usaha menengah
+     */
+    const BeritaAcara = 'berita_acara';
 }
