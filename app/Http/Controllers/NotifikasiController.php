@@ -12,7 +12,7 @@ class NotifikasiController extends Controller
 {
     public function create()
     {
-        $notifikasi = DB::table('notifikasi')->where('id_user', '=', Auth::id());
+        $notifikasi = DB::table('notifikasi')->where('id_user', '=', Auth::id())->get();
 
         return response()->json($notifikasi);
     }
@@ -34,5 +34,36 @@ class NotifikasiController extends Controller
                 'url' => $request->input('url')
             ]
         ]);
+    }
+
+    public function destroy(Request $request)
+    {
+        $id_notifikasi = $request->query('id');
+
+        if ($id_notifikasi === null) {
+            $data = DB::table('notifikasi')
+                ->where('id_user', '=', Auth::id())
+                ->get();
+            DB::table('notifikasi')
+                ->where('id_user', '=', Auth::id())
+                ->delete();
+            return response()->json([
+                'message' => 'Sucessfully deleted all notification below',
+                'data' => $data
+            ]);
+        } else {
+            $data = DB::table('notifikasi')
+                ->where('id_user', '=', Auth::id())
+                ->where('id', '=', $id_notifikasi)
+                ->get();
+            DB::table('notifikasi')
+                ->where('id_user', '=', Auth::id())
+                ->where('id', '=', $id_notifikasi)
+                ->delete();
+            return response()->json([
+                'message' => 'Sucessfully deleted the notification below',
+                'data' => $data
+            ]);
+        }
     }
 }

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Pengajuan\PengajuanController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\Pengajuan\Low\LowPengajuanController;
 use App\Http\Controllers\Pengajuan\File\FilePengajuanController;
 use App\Http\Controllers\Pengajuan\Middle\MiddlePengajuanController;
@@ -55,6 +56,9 @@ Route::middleware('auth')->prefix('user')->group(function () {
     Route::post('detail-file/{id}/{filename}/komentar', [FilePengajuanController::class, 'store_komentar']);
     Route::post('detail-file/{id}/{filename}/approve', [FilePengajuanController::class, 'approve']);
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy']);
+    Route::get('notifikasi', [NotifikasiController::class, 'create']);
+    Route::post('notifikasi', [NotifikasiController::class, 'store']);
+    Route::delete('notifikasi', [NotifikasiController::class, 'destroy']);
 });
 
 // Route::middleware('auth')->prefix('admin')->group(function () {
