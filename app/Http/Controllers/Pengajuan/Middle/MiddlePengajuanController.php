@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Pengajuan\Middle;
 
-use Session;
 use Carbon\Carbon;
-use App\Models\Pengajuan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Providers\UserRoleProvider;
@@ -26,6 +24,11 @@ class MiddlePengajuanController extends Controller
      */
     public function create($id)
     {
+        // ================================
+        // ? Check User Role
+        // ? If user is normal user, get pengajuan by the user id
+        // ? Else show all pengajuan related
+        // ================================
         if (Auth::user()->role === 'user') {
             $pengajuan = DB::table('pengajuan')
                 ->where('id', '=', $id)
@@ -87,11 +90,17 @@ class MiddlePengajuanController extends Controller
         }
 
         return view('uploads.middle')
+            // ? Data User yang ter-login
             ->with('user', Auth::user())
+            // ? File dokumen yang terupload untuk ID pengajuan tersebut
             ->with('detail_pengajuan', $file)
+            // ? Status pengajuan (Ditolak/Diterima/Pending/Not Submitted)
             ->with('status', $status[0]->status)
+            // ? Untuk munculkan button untuk tolak atau setujui pengajuan (Untuk role selain user)
             ->with('approved', $already_approve ?? $already_approve > 0 ? true : false)
+            // ? File Approval yang diupload oleh approver (Surat Penolakan atau Surat Persetujuan)
             ->with('file_approval', base64_encode($file_approval_binary))
+            // ? Id dari Pengajuan
             ->with('page_id', $id);
     }
     /**
@@ -526,6 +535,7 @@ class MiddlePengajuanController extends Controller
             ->get(['current_approver'])[0]
             ->current_approver;
 
+        // ? Jika belum ada approver atau pengajuan baru diajukan ke sistem
         if ($get_current_approver === null) {
             DB::table('pengajuan')
                 ->where('id', '=', $id)
@@ -534,6 +544,7 @@ class MiddlePengajuanController extends Controller
                     'current_approver' => UserRoleProvider::ApproverQueue[0]
                 ]);
         } else {
+            // ? Ambil role approver saat ini
             $indexCurrentApprover = array_search($get_current_approver, UserRoleProvider::ApproverQueue);
             DB::table('pengajuan')
                 ->where('id', '=', $id)
@@ -585,8 +596,11 @@ class MiddlePengajuanController extends Controller
 
         $statusQuery = $request->query('status');
 
+        // ? Aksi penerimaan pengajuan tengah
         if ($statusQuery === 'diterima') {
+            // ? Aksi tambahan untuk Kepala Dinas
             if (Auth::user()->role === 'kadin') {
+                // ? Upload Surat Persetujan dari Kadin
                 $file = $request->file('surat_persetujuan');
                 /**
                  * ? Storage Path for Approval Pengajuan
@@ -608,11 +622,14 @@ class MiddlePengajuanController extends Controller
                     ->get()
                     ->count();
 
+                // ! Check count of rejected file
                 if ($checkRejectedFile > 0) {
                     return back()
                         ->with('error', 'Cek kembali file yang di-approve! Masih ada file yang ditolak!');
                 }
             }
+
+            // ? ==========================================
 
             $approval_pengajuan = DB::table('approval_pengajuan')
                 ->where('id_pengajuan', '=', $id)
@@ -621,9 +638,8 @@ class MiddlePengajuanController extends Controller
             $approval_pengajuan_availability = $approval_pengajuan
                 ->count();
 
+            // ? Jika sudah pernah approve, update approval
             if ($approval_pengajuan_availability > 0) {
-
-
                 DB::table('approval_pengajuan')
                     ->where('id_pengajuan', '=', $id)
                     ->update([
@@ -632,6 +648,7 @@ class MiddlePengajuanController extends Controller
                         'komentar' => $request->input('komentar'),
                         'updated_at' => Carbon::now()
                     ]);
+                // ? Aksi tambahan untuk Kepala Dinas
                 if (Auth::user()->role === 'kadin') {
                     $file_approval_pengajuan = DB::table('file_approval_pengajuan')
                         ->where('id_approval_pengajuan', '=', $approval_pengajuan[0]->id)
@@ -646,7 +663,9 @@ class MiddlePengajuanController extends Controller
                         ]);
                     Storage::delete($storagePathApprovalPengajuan . $file_approval_pengajuan[0]->name);
                 }
-            } else {
+            }
+            // ? Jika belum pernah approve, buat approval baru
+            else {
                 DB::table('approval_pengajuan')
                     ->insert([
                         'id_pengajuan' => $id,
@@ -656,6 +675,7 @@ class MiddlePengajuanController extends Controller
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+                // ? Aksi tambahan untuk Kepala Dinas
                 if (Auth::user()->role === 'kadin') {
                     $approval_pengajuan = DB::table('approval_pengajuan')
                         ->where('id_pengajuan', '=', $id)
@@ -671,7 +691,6 @@ class MiddlePengajuanController extends Controller
                         ]);
                 }
             }
-            // // TODO: Automatic send proposal to next approver based on queue
             // * Automatic send proposal to next approver based on queue
             $indexCurrentApprover = array_search(Auth::user()->role, UserRoleProvider::ApproverQueue);
 
@@ -696,7 +715,10 @@ class MiddlePengajuanController extends Controller
                 ]);
 
             return back();
-        } else if ($statusQuery === 'ditolak') {
+        }
+        // ? Aksi penolakan pengajuan tengah
+        else if ($statusQuery === 'ditolak') {
+            // ? Upload Surat Penolakan dari Approver
             $file = $request->file('surat_penolakan');
             /**
              * ? Storage Path for Approval Pengajuan
@@ -718,16 +740,19 @@ class MiddlePengajuanController extends Controller
                 ->get()
                 ->count();
 
-            if ($checkAcceptedFile > 0) {
-                return back()
-                    ->with('error', 'Cek kembali file yang di-approve! Harus ada satu file yang ditolak!');
-            }
+            // // ! Check count of accepted file
+            // ? File yang terima tidak perlu diupload ulang
+            // if ($checkAcceptedFile > 0) {
+            //     return back()
+            //         ->with('error', 'Cek kembali file yang di-approve! Tidak boleh ada satu file yang diterima!');
+            // }
 
             $approval_pengajuan_availability = DB::table('approval_pengajuan')
                 ->where('id_pengajuan', '=', $id)
                 ->get()
                 ->count();
 
+            // ! Check Uploaded Surat Penolakan
             if (!$request->hasFile('surat_penolakan')) {
                 return back()
                     ->with('error', 'Butuh surat penolakan!');
@@ -745,6 +770,7 @@ class MiddlePengajuanController extends Controller
                 ->where('id_approval_pengajuan', '=', $approval_pengajuan[0]->id)
                 ->get();
 
+            // ? Jika sudah pernah approve, update approval
             if ($approval_pengajuan_availability > 0) {
                 DB::table('approval_pengajuan')
                     ->where('id_pengajuan', '=', $id)
@@ -767,7 +793,9 @@ class MiddlePengajuanController extends Controller
                         'updated_at' => Carbon::now()
                     ]);
                 Storage::delete($storagePathApprovalPengajuan . $file_approval_pengajuan[0]->name);
-            } else {
+            }
+            // ? Jika belum pernah approve, buat approval baru
+            else {
                 DB::table('approval_pengajuan')
                     ->insert([
                         'id_pengajuan' => $id,
