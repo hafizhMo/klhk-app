@@ -600,7 +600,9 @@ class MiddlePengajuanController extends Controller
         if ($statusQuery === 'diterima') {
             // ? Aksi tambahan untuk Kepala Dinas
             if (Auth::user()->role === 'kadin') {
+                Debugbar::info($request->file('surat_persetujuan'));
                 // ? Upload Surat Persetujan dari Kadin
+                // TODO: Error pas diupload sama kadin
                 $file = $request->file('surat_persetujuan');
                 /**
                  * ? Storage Path for Approval Pengajuan
@@ -626,6 +628,11 @@ class MiddlePengajuanController extends Controller
                 if ($checkRejectedFile > 0) {
                     return back()
                         ->with('error', 'Cek kembali file yang di-approve! Masih ada file yang ditolak!');
+                }
+
+                if (!$request->hasFile('surat_persetujuan')) {
+                    return back()
+                        ->with('error', 'Butuh surat persetujuan!');
                 }
             }
 
@@ -653,15 +660,27 @@ class MiddlePengajuanController extends Controller
                     $file_approval_pengajuan = DB::table('file_approval_pengajuan')
                         ->where('id_approval_pengajuan', '=', $approval_pengajuan[0]->id)
                         ->get();
-                    DB::table('file_approval_pengajuan')
-                        ->update([
-                            'id_approval_pengajuan' => $approval_pengajuan[0]->id,
-                            'name' => $filename,
-                            'type' => $file->extension(),
-                            'size' => $file->getSize(),
-                            'updated_at' => Carbon::now()
-                        ]);
-                    Storage::delete($storagePathApprovalPengajuan . $file_approval_pengajuan[0]->name);
+                        if ($file_approval_pengajuan->count() === 0) {
+                            DB::table('file_approval_pengajuan')
+                                ->insert([
+                                    'id_approval_pengajuan' => $approval_pengajuan[0]->id,
+                                    'name' => $filename,
+                                    'type' => $file->extension(),
+                                    'size' => $file->getSize(),
+                                    'created_at' => Carbon::now(),
+                                    'updated_at' => Carbon::now()
+                                ]);
+                        } else {
+                            DB::table('file_approval_pengajuan')
+                                ->update([
+                                    'id_approval_pengajuan' => $approval_pengajuan[0]->id,
+                                    'name' => $filename,
+                                    'type' => $file->extension(),
+                                    'size' => $file->getSize(),
+                                    'updated_at' => Carbon::now()
+                                ]);
+                            Storage::delete($storagePathApprovalPengajuan . $file_approval_pengajuan[0]->name);
+                        }
                 }
             }
             // ? Jika belum pernah approve, buat approval baru

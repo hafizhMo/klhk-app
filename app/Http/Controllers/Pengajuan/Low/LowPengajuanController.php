@@ -69,7 +69,7 @@ class LowPengajuanController extends Controller
         $already_approve = null;
         if ($approval_pengajuan->count() > 0) {
             $file_approval = DB::table('file_approval_pengajuan')
-                ->where('id_approval_pengajuan', $approval_pengajuan[0]->id_pengajuan)
+                ->where('id_approval_pengajuan', $approval_pengajuan[0]->id)
                 ->get();
 
             if ($file_approval->count() > 0) {
@@ -435,6 +435,8 @@ class LowPengajuanController extends Controller
 
         if ($statusQuery === 'diterima') {
             if (Auth::user()->role === 'kadin') {
+                // ? Upload Surat Persetujan dari Kadin
+                // TODO: Error pas diupload sama kadin
                 $file = $request->file('surat_persetujuan');
                 /**
                  * ? Storage Path for Approval Pengajuan
@@ -461,9 +463,9 @@ class LowPengajuanController extends Controller
                         ->with('error', 'Cek kembali file yang di-approve! Masih ada file yang ditolak!');
                 }
 
-                if (!$request->hasFile('surat_penolakan')) {
+                if (!$request->hasFile('surat_persetujuan')) {
                     return back()
-                        ->with('error', 'Butuh surat penolakan!');
+                        ->with('error', 'Butuh surat persetujuan!');
                 }
 
                 $file->storeAs($storagePathApprovalPengajuan, $filename);
@@ -489,15 +491,28 @@ class LowPengajuanController extends Controller
                     $file_approval_pengajuan = DB::table('file_approval_pengajuan')
                         ->where('id_approval_pengajuan', '=', $approval_pengajuan[0]->id)
                         ->get();
-                    DB::table('file_approval_pengajuan')
-                        ->update([
-                            'id_approval_pengajuan' => $approval_pengajuan[0]->id,
-                            'name' => $filename,
-                            'type' => $file->extension(),
-                            'size' => $file->getSize(),
-                            'updated_at' => Carbon::now()
-                        ]);
-                    Storage::delete($storagePathApprovalPengajuan . $file_approval_pengajuan[0]->name);
+
+                    if ($file_approval_pengajuan->count() === 0) {
+                        DB::table('file_approval_pengajuan')
+                            ->insert([
+                                'id_approval_pengajuan' => $approval_pengajuan[0]->id,
+                                'name' => $filename,
+                                'type' => $file->extension(),
+                                'size' => $file->getSize(),
+                                'created_at' => Carbon::now(),
+                                'updated_at' => Carbon::now()
+                            ]);
+                    } else {
+                        DB::table('file_approval_pengajuan')
+                            ->update([
+                                'id_approval_pengajuan' => $approval_pengajuan[0]->id,
+                                'name' => $filename,
+                                'type' => $file->extension(),
+                                'size' => $file->getSize(),
+                                'updated_at' => Carbon::now()
+                            ]);
+                        Storage::delete($storagePathApprovalPengajuan . $file_approval_pengajuan[0]->name);
+                    }
                 }
             } else {
                 DB::table('approval_pengajuan')
@@ -513,22 +528,36 @@ class LowPengajuanController extends Controller
                     $approval_pengajuan = DB::table('approval_pengajuan')
                         ->where('id_pengajuan', '=', $id)
                         ->get();
-                    DB::table('file_approval_pengajuan')
-                        ->insert([
-                            'id_approval_pengajuan' => $approval_pengajuan[0]->id,
-                            'name' => $filename,
-                            'type' => $file->extension(),
-                            'size' => $file->getSize(),
-                            'created_at' => Carbon::now(),
-                            'updated_at' => Carbon::now()
-                        ]);
+                    $file_approval_pengajuan = DB::table('file_approval_pengajuan')
+                        ->where('id_approval_pengajuan', '=', $approval_pengajuan[0]->id)
+                        ->get();
+                    if ($file_approval_pengajuan->count() === 0) {
+                        DB::table('file_approval_pengajuan')
+                            ->insert([
+                                'id_approval_pengajuan' => $approval_pengajuan[0]->id,
+                                'name' => $filename,
+                                'type' => $file->extension(),
+                                'size' => $file->getSize(),
+                                'created_at' => Carbon::now(),
+                                'updated_at' => Carbon::now()
+                            ]);
+                    } else {
+                        DB::table('file_approval_pengajuan')
+                            ->update([
+                                'id_approval_pengajuan' => $approval_pengajuan[0]->id,
+                                'name' => $filename,
+                                'type' => $file->extension(),
+                                'size' => $file->getSize(),
+                                'updated_at' => Carbon::now()
+                            ]);
+                    }
                 }
             }
 
             // * Automatic send proposal to next approver based on queue
             $indexCurrentApprover = array_search(Auth::user()->role, UserRoleProvider::ApproverQueue);
 
-            if ($indexCurrentApprover === count(UserRoleProvider::ApproverQueue)) {
+            if ($indexCurrentApprover === count(UserRoleProvider::ApproverQueue) - 1) {
                 DB::table('pengajuan')
                     ->where('id', $id)
                     ->update([
