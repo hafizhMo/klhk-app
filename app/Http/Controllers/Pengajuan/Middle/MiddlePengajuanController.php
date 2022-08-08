@@ -72,7 +72,7 @@ class MiddlePengajuanController extends Controller
         $already_approve = null;
         if ($approval_pengajuan->count() > 0) {
             $file_approval = DB::table('file_approval_pengajuan')
-                ->where('id_approval_pengajuan', $approval_pengajuan[0]->id_pengajuan)
+                ->where('id_approval_pengajuan', $approval_pengajuan[0]->id)
                 ->get();
 
             if ($file_approval->count() > 0) {
