@@ -90,7 +90,7 @@ foreach ($detail_pengajuan as $value) {
                     </td>
                 </tr>
             @endfor
-            @if ($file_approval !== null)
+            @if ($file_approval !== '')
                 <tr class="bg-white border-b text-center">
                     <td class="px-6 py-4"></td>
                     <td class="px-6 py-4 text-left">{{ $status === 'ditolak' ? 'Surat Penolakan' : 'Surat Persetujuan' }}
@@ -304,7 +304,7 @@ foreach ($detail_pengajuan as $value) {
             </div>
         </div>
     @endif
-    @if ($file_approval !== null)
+    @if ($file_approval !== '')
         <div id="suratApprovalModal" tabindex="-1" aria-hidden="true"
             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-screen md:h-screen">
             <div class="relative p-4 w-full h-full md:h-full">
