@@ -5,54 +5,63 @@ $input = [
         'input_id' => 'nib',
         'url' => '',
         'available' => false,
+        'status' => null,
     ],
     (object) [
         'nama_input' => 'Akta Pendirian',
         'input_id' => 'akta',
         'url' => '',
         'available' => false,
+        'status' => null,
     ],
     (object) [
         'nama_input' => 'Dokumen Lingkungan Hidup berupa Surat Pernyataan Pengelolaan Lingkungan (SPPL) Upaya Pengelolaan Lingkungan dan Upaya Pemantauan Lingkungan (UKL-UPL)',
         'input_id' => 'sppl_ukl_upl',
         'url' => '',
         'available' => false,
+        'status' => null,
     ],
     (object) [
         'nama_input' => 'Proposal Teknis',
         'input_id' => 'proposal',
         'url' => '',
         'available' => false,
+        'status' => null,
     ],
     (object) [
         'nama_input' => 'Jaminan pasokan bahan baku (dokumen kerjasama pasokan bahan baku atau pernyataan kesanggupan pemenuhan bahan baku dari pemasok)',
         'input_id' => 'jaminan_pasokan',
         'url' => '',
         'available' => false,
+        'status' => null,
     ],
     (object) [
         'nama_input' => 'Bukti kepemilikan mesin utama produksi pengolahan hasil hutan atau pernyataan kesanggupan pemenuhan rencana pengadaan mesin utama produksi',
         'input_id' => 'bukti_mesin',
         'url' => '',
         'available' => false,
+        'status' => null,
     ],
     (object) [
         'nama_input' => 'Bukti/Dokumen kepemilikan atau penguasaan atas prasarana bangunan pabrik, tempat atau lahan penampungan bahan baku dan gudang kayu olahan',
         'input_id' => 'bukti_prasarana',
         'url' => '',
         'available' => false,
+        'status' => null,
     ],
     (object) [
         'nama_input' => 'Dokumen tenaga kerja professional bersertifikat atau pernyataan komitmen pemenuhan tenaga teknis profesional bersertifikat',
         'input_id' => 'dokumen_tkp',
         'url' => '',
         'available' => false,
+        'status' => null,
     ],
     (object) [
         'nama_input' => 'Berita Acara',
         'input_id' => 'berita_acara',
         'url' => '',
         'available' => false,
+        'status' => null,
     ],
 ];
 
@@ -97,14 +106,45 @@ foreach ($detail_pengajuan as $value) {
             break;
     }
 }
+
+foreach ($approval_detail_pengajuan as $value) {
+    $url = $value->id_pengajuan . '/' . $value->name;
+    switch ($value->jenis_file) {
+        case 'nib':
+            $input[0]->status = $value->status;
+            break;
+        case 'akta':
+            $input[1]->status = $value->status;
+            break;
+        case 'sppl_ukl_upl':
+            $input[2]->status = $value->status;
+            break;
+        case 'proposal':
+            $input[3]->status = $value->status;
+            break;
+        case 'jaminan_pasokan':
+            $input[4]->status = $value->status;
+            break;
+        case 'bukti_mesin':
+            $input[5]->status = $value->status;
+            break;
+        case 'bukti_prasarana':
+            $input[6]->status = $value->status;
+            break;
+        case 'dokumen_tkp':
+            $input[7]->status = $value->status;
+            break;
+        case 'berita_acara':
+            $input[8]->status = $value->status;
+            break;
+    }
+}
 @endphp
 
 @extends('layouts.dashboard')
 
 @section('content')
-    <!-- <div class="flex">
-                                                <a href="{{ url('/user/dashboard') }}" class="flex-1 bg-gray-900 text-white px-3 py-2 text-base font-medium">Submit</a>
-                                            </div> -->
+    <a href="/user/dashboard">Back</a>
     <h1 class="text-2xl">Pengajuan surat usaha skala menengah</h1>
     <hr class="mt-2">
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -139,6 +179,7 @@ foreach ($detail_pengajuan as $value) {
                                 <path d="M9 13h2v5a1 1 0 11-2 0v-5z"></path>
                             </svg>
                         </button>
+                        <p>{{ $input[$i]->status ?? 'belum diproses' }}</p>
                     </td>
                 </tr>
             @endfor

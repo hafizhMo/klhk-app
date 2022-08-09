@@ -5,30 +5,35 @@ $input = [
         'input_id' => 'surat_permohonan',
         'url' => '',
         'available' => false,
+        'status' => null,
     ],
     (object) [
         'nama_input' => 'Nomor Induk Berusaha (NIB)',
         'input_id' => 'nib',
         'url' => '',
         'available' => false,
+        'status' => null,
     ],
     (object) [
         'nama_input' => 'Surat Pernyataan Pengelolaan Lingkungan (SPPL)',
         'input_id' => 'sppl',
         'url' => '',
         'available' => false,
+        'status' => null,
     ],
     (object) [
         'nama_input' => 'Surat Pernyataan yang berisi jenis Pengolahan Hasil Hutan, Mesin Utama Produksi, dan kapasitas produksi',
         'input_id' => 'surat_pernyataan',
         'url' => '',
         'available' => false,
+        'status' => null,
     ],
     (object) [
         'nama_input' => 'Pernyataan Mandiri dari OSS',
         'input_id' => 'pernyataan_oss',
         'url' => '',
         'available' => false,
+        'status' => null,
     ],
 ];
 
@@ -57,11 +62,32 @@ foreach ($detail_pengajuan as $value) {
             break;
     }
 }
+
+foreach ($approval_detail_pengajuan as $value) {
+    switch ($value->jenis_file) {
+        case 'surat_permohonan':
+            $input[0]->status = $value->status;
+            break;
+        case 'nib':
+            $input[1]->status = $value->status;
+            break;
+        case 'sppl':
+            $input[2]->status = $value->status;
+            break;
+        case 'surat_pernyataan':
+            $input[3]->status = $value->status;
+            break;
+        case 'pernyataan_oss':
+            $input[4]->status = $value->status;
+            break;
+    }
+}
 @endphp
 
 @extends('layouts.dashboard')
 
 @section('content')
+    <a href="/user/dashboard">Back</a>
     <h1 class="text-2xl">Pengajuan surat usaha skala kecil</h1>
     <hr class="mt-2">
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -87,6 +113,7 @@ foreach ($detail_pengajuan as $value) {
                                 <path d="M9 13h2v5a1 1 0 11-2 0v-5z"></path>
                             </svg>
                         </button>
+                        <p>{{ $input[$i]->status ?? 'belum diproses' }}</p>
                     </td>
                 </tr>
             @endfor

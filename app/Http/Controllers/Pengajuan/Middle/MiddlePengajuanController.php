@@ -89,11 +89,19 @@ class MiddlePengajuanController extends Controller
             }
         }
 
+        $approval_file_pengajuan = DB::table('approval_file_pengajuan')
+            ->join('file_detail_pengajuan', 'file_detail_pengajuan.id', 'approval_file_pengajuan.id_file_pengajuan')
+            ->where('file_detail_pengajuan.id_pengajuan', '=', $id)
+            ->get();
+
+
         return view('uploads.middle')
             // ? Data User yang ter-login
             ->with('user', Auth::user())
             // ? File dokumen yang terupload untuk ID pengajuan tersebut
             ->with('detail_pengajuan', $file)
+            // ? Approval dokumen yang terupload
+            ->with('approval_detail_pengajuan', $approval_file_pengajuan)
             // ? Status pengajuan (Ditolak/Diterima/Pending/Not Submitted)
             ->with('status', $status[0]->status)
             // ? Untuk munculkan button untuk tolak atau setujui pengajuan (Untuk role selain user)

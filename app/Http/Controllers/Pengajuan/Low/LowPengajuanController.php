@@ -86,9 +86,16 @@ class LowPengajuanController extends Controller
             }
         }
 
+        $approval_file_pengajuan = DB::table('approval_file_pengajuan')
+            ->join('file_detail_pengajuan', 'file_detail_pengajuan.id', 'approval_file_pengajuan.id_file_pengajuan')
+            ->where('file_detail_pengajuan.id_pengajuan', '=', $id)
+            ->get();
+
+
         return view('uploads.low')
             ->with('user', Auth::user())
             ->with('detail_pengajuan', $file)
+            ->with('approval_detail_pengajuan', $approval_file_pengajuan)
             ->with('status', $status[0]->status)
             ->with('approved', $already_approve ?? $already_approve > 0 ? true : false)
             ->with('file_approval', base64_encode($file_approval_binary))

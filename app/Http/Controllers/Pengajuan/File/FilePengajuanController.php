@@ -49,7 +49,6 @@ class FilePengajuanController extends Controller
             ->where('name', '=', $filename)
             ->get();
 
-        // // TODO: Get latest approval
         // * Get latest approval
         $current_approver = DB::table('pengajuan')
             ->where('id', $id)
@@ -67,6 +66,7 @@ class FilePengajuanController extends Controller
         return view('user.detail')
             ->with('user', Auth::user())
             ->with('id', $id)
+            ->with('jenis', $file[0]->skala_usaha)
             ->with('filename', $filename)
             ->with('komentar', $komentar)
             ->with('status', $status[0]->status ?? null)

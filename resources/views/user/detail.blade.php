@@ -1,6 +1,13 @@
 @extends('layouts.dashboard')
 
 @section('content')
+    @if ($jenis === 'bawah')
+        <a href="/user/upload-file/low/{{ $id }}">Back</a>
+    @elseif ($jenis === 'menengah')
+        <a href="/user/upload-file/middle/{{ $id }}">Back</a>
+    @else
+        <a href="/user/dashboard">Back</a>
+    @endif
     <h1>Detail Pengajuan</h1>
     <object data="data:application/pdf;base64,{{ $attachment }}" type="application/pdf" width="100%" height="100%">
         <iframe src="data:application/pdf;base64,{{ $attachment }}" width="100%" height="100%" style="border: none;">
