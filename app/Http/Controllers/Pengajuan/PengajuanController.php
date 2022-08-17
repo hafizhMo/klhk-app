@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Providers\StatusPengajuanProvider;
+use Illuminate\Support\Facades\DB;
 
 class PengajuanController extends Controller
 {
@@ -19,8 +20,11 @@ class PengajuanController extends Controller
      */
     public function create()
     {
+        $notifikasi = DB::table('notifikasi')->where('id_user', '=', Auth::id())->get();
+
         return view('user.create')
-            ->with('user', Auth::user());
+            ->with('user', Auth::user())
+            ->with('notifikasi', $notifikasi);
     }
     /**
      * * Create New Pengajuan
@@ -59,9 +63,21 @@ class PengajuanController extends Controller
 
         // ? Redirect to input detail pengajuan (kecil/menengah)
         if ($request->input('tipe') === 'kecil') {
+            DB::table('notifikasi')
+                ->insert([
+                    'id_user' => Auth::id(),
+                    'konten' => 'Pengajuan berhasil dibuat!',
+                    'url' => url("upload-file/low/$pengajuan->id")
+                ]);
             return redirect('/user/upload-file/low/' . $pengajuan->id)
                 ->with('user', Auth::user());
         } else if ($request->input('tipe') === 'menengah') {
+            DB::table('notifikasi')
+                ->insert([
+                    'id_user' => Auth::id(),
+                    'konten' => 'Pengajuan berhasil dibuat!',
+                    'url' => url("upload-file/middle/$pengajuan->id")
+                ]);
             return redirect('/user/upload-file/middle/' . $pengajuan->id)
                 ->with('user', Auth::user());
         }

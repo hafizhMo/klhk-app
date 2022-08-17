@@ -63,6 +63,8 @@ class FilePengajuanController extends Controller
         $path = 'pengajuan/' . $file[0]->user_id . '/' . $id . '/' . $file[0]->jenis_file . '/' . $file[0]->name;
         $file_bin = Storage::get($path);
 
+        $notifikasi = DB::table('notifikasi')->where('id_user', '=', Auth::id())->get();
+
         return view('user.detail')
             ->with('user', Auth::user())
             ->with('id', $id)
@@ -71,7 +73,8 @@ class FilePengajuanController extends Controller
             ->with('komentar', $komentar)
             ->with('status', $status[0]->status ?? null)
             ->with('current_approver', $current_approver[0]->current_approver)
-            ->with('attachment', base64_encode($file_bin));
+            ->with('attachment', base64_encode($file_bin))
+            ->with('notifikasi', $notifikasi);
     }
     /**
      * * Add comment to document
@@ -97,6 +100,13 @@ class FilePengajuanController extends Controller
                 'komentar' => $request->input('komentar'),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
+            ]);
+
+        DB::table('notifikasi')
+            ->insert([
+                'id_user' => Auth::id(),
+                'konten' => 'Berhasil menambahkan komentar!',
+                'url' => url("detail-file/$id/$filename")
             ]);
 
         return back();
@@ -136,8 +146,6 @@ class FilePengajuanController extends Controller
                         'status' => StatusPengajuanProvider::Accepted,
                         'updated_at' => Carbon::now()
                     ]);
-
-                return back();
             } else {
                 DB::table('approval_file_pengajuan')
                     ->insert([
@@ -147,9 +155,29 @@ class FilePengajuanController extends Controller
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
-
-                return back();
             }
+
+            $accepted_pengajuan = DB::table('pengajuan')
+                ->where('id', $id)
+                ->get();
+
+            // TODO: Kirim notifikasi ke user
+            DB::table('notifikasi')
+                ->insert([
+                    'id_user' => $accepted_pengajuan[0]->user_id,
+                    'konten' => 'File Pengajuan anda sudah diterima oleh ' . Auth::user()->role . '! - ' . $accepted_pengajuan[0]->no_surat,
+                    'url' => url("detail-file/$id/$filename")
+                ]);
+
+            // TODO: Kirim notifikasi ke approver
+            DB::table('notifikasi')
+                ->insert([
+                    'id_user' => $accepted_pengajuan[0]->user_id,
+                    'konten' => 'File Pengajuan sudah berhasil diapprove! - ' . $accepted_pengajuan[0]->no_surat,
+                    'url' => url("detail-file/$id/$filename")
+                ]);
+
+            return back();
         } else if ($statusQuery === 'ditolak') {
             $approval_file_availability = DB::table('approval_file_pengajuan')
                 ->join('file_detail_pengajuan', 'file_detail_pengajuan.id', 'approval_file_pengajuan.id_file_pengajuan')
@@ -164,8 +192,6 @@ class FilePengajuanController extends Controller
                         'status' => StatusPengajuanProvider::Rejected,
                         'updated_at' => Carbon::now()
                     ]);
-
-                return back();
             } else {
                 DB::table('approval_file_pengajuan')
                     ->insert([
@@ -175,9 +201,29 @@ class FilePengajuanController extends Controller
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
-
-                return back();
             }
+
+            $accepted_pengajuan = DB::table('pengajuan')
+                ->where('id', $id)
+                ->get();
+
+            // TODO: Kirim notifikasi ke user
+            DB::table('notifikasi')
+                ->insert([
+                    'id_user' => $accepted_pengajuan[0]->user_id,
+                    'konten' => 'File Pengajuan anda sudah diterima oleh ' . Auth::user()->role . '! - ' . $accepted_pengajuan[0]->no_surat,
+                    'url' => url("detail-file/$id/$filename")
+                ]);
+
+            // TODO: Kirim notifikasi ke approver
+            DB::table('notifikasi')
+                ->insert([
+                    'id_user' => $accepted_pengajuan[0]->user_id,
+                    'konten' => 'File Pengajuan sudah berhasil diapprove! - ' . $accepted_pengajuan[0]->no_surat,
+                    'url' => url("detail-file/$id/$filename")
+                ]);
+
+            return back();
         } else {
             return abort(404);
         }

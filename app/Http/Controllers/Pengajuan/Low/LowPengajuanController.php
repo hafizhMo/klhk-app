@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Pengajuan\Low;
 
-use Session;
 use Carbon\Carbon;
-use App\Models\Pengajuan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Providers\UserRoleProvider;
@@ -91,6 +89,7 @@ class LowPengajuanController extends Controller
             ->where('file_detail_pengajuan.id_pengajuan', '=', $id)
             ->get();
 
+        $notifikasi = DB::table('notifikasi')->where('id_user', '=', Auth::id())->get();
 
         return view('uploads.low')
             ->with('user', Auth::user())
@@ -98,6 +97,7 @@ class LowPengajuanController extends Controller
             ->with('approval_detail_pengajuan', $approval_file_pengajuan)
             ->with('status', $status[0]->status)
             ->with('approved', $already_approve ?? $already_approve > 0 ? true : false)
+            ->with('notifikasi', $notifikasi)
             ->with('file_approval', base64_encode($file_approval_binary))
             ->with('page_id', $id);
     }
@@ -350,6 +350,12 @@ class LowPengajuanController extends Controller
             ->where('id', '=', $id)
             ->get(['status']);
 
+        DB::table('notifikasi')
+            ->insert([
+                'id_user' => Auth::id(),
+                'konten' => 'File pengajuan berhasil diunggah!',
+                'url' => url("upload-file/low/$id")
+            ]);
 
         return back();
     }
@@ -397,6 +403,13 @@ class LowPengajuanController extends Controller
                     'current_approver' => UserRoleProvider::ApproverQueue[$indexCurrentApprover]
                 ]);
         }
+
+        DB::table('notifikasi')
+            ->insert([
+                'id_user' => Auth::id(),
+                'konten' => 'Pengajuan berhasil dikirim!',
+                'url' => url("upload-file/low/$id")
+            ]);
 
         return back();
     }
@@ -584,6 +597,26 @@ class LowPengajuanController extends Controller
                     'current_approver' => $nextApprover
                 ]);
 
+            $accepted_pengajuan = DB::table('pengajuan')
+                ->where('id', $id)
+                ->get();
+
+            // TODO: Kirim notifikasi ke user
+            DB::table('notifikasi')
+                ->insert([
+                    'id_user' => $accepted_pengajuan[0]->user_id,
+                    'konten' => 'Pengajuan anda sudah diterima oleh ' . Auth::user()->role . '! - ' . $accepted_pengajuan[0]->no_surat,
+                    'url' => url("upload-file/low/$id")
+                ]);
+
+            // TODO: Kirim notifikasi ke approver
+            DB::table('notifikasi')
+                ->insert([
+                    'id_user' => $accepted_pengajuan[0]->user_id,
+                    'konten' => 'Pengajuan sudah berhasil diapprove! - ' . $accepted_pengajuan[0]->no_surat,
+                    'url' => url("upload-file/low/$id")
+                ]);
+
             return back();
         } else if ($statusQuery === 'ditolak') {
             $file = $request->file('surat_penolakan');
@@ -676,6 +709,27 @@ class LowPengajuanController extends Controller
                         'updated_at' => Carbon::now()
                     ]);
             }
+
+            $rejected_pengajuan = DB::table('pengajuan')
+                ->where('id', $id)
+                ->get();
+
+            // TODO: Kirim notifikasi ke user
+            DB::table('notifikasi')
+                ->insert([
+                    'id_user' => $rejected_pengajuan[0]->user_id,
+                    'konten' => 'Pengajuan anda sudah diterima oleh ' . Auth::user()->role . '! - ' . $rejected_pengajuan[0]->no_surat,
+                    'url' => url("upload-file/middle/$id")
+                ]);
+
+            // TODO: Kirim notifikasi ke approver
+            DB::table('notifikasi')
+                ->insert([
+                    'id_user' => $rejected_pengajuan[0]->user_id,
+                    'konten' => 'Pengajuan sudah berhasil diapprove! - ' . $rejected_pengajuan[0]->no_surat,
+                    'url' => url("upload-file/middle/$id")
+                ]);
+
             return back();
         } else {
             return abort(404);
