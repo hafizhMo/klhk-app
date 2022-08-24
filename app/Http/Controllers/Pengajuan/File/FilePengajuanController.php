@@ -172,7 +172,7 @@ class FilePengajuanController extends Controller
             // TODO: Kirim notifikasi ke approver
             DB::table('notifikasi')
                 ->insert([
-                    'id_user' => $accepted_pengajuan[0]->user_id,
+                    'id_user' => Auth::id(),
                     'konten' => 'File Pengajuan sudah berhasil diapprove! - ' . $accepted_pengajuan[0]->no_surat,
                     'url' => url("detail-file/$id/$filename")
                 ]);
@@ -211,14 +211,14 @@ class FilePengajuanController extends Controller
             DB::table('notifikasi')
                 ->insert([
                     'id_user' => $accepted_pengajuan[0]->user_id,
-                    'konten' => 'File Pengajuan anda sudah diterima oleh ' . Auth::user()->role . '! - ' . $accepted_pengajuan[0]->no_surat,
+                    'konten' => 'File Pengajuan anda sudah ditolak oleh ' . Auth::user()->role . '! - ' . $accepted_pengajuan[0]->no_surat,
                     'url' => url("detail-file/$id/$filename")
                 ]);
 
             // TODO: Kirim notifikasi ke approver
             DB::table('notifikasi')
                 ->insert([
-                    'id_user' => $accepted_pengajuan[0]->user_id,
+                    'id_user' => Auth::id(),
                     'konten' => 'File Pengajuan sudah berhasil diapprove! - ' . $accepted_pengajuan[0]->no_surat,
                     'url' => url("detail-file/$id/$filename")
                 ]);

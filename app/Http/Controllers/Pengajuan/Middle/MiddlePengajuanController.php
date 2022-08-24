@@ -773,7 +773,7 @@ class MiddlePengajuanController extends Controller
             // TODO: Kirim notifikasi ke approver
             DB::table('notifikasi')
                 ->insert([
-                    'id_user' => $accepted_pengajuan[0]->user_id,
+                    'id_user' => Auth::id(),
                     'konten' => 'Pengajuan sudah berhasil diapprove! - ' . $accepted_pengajuan[0]->no_surat,
                     'url' => url("upload-file/middle/$id")
                 ]);
@@ -830,12 +830,12 @@ class MiddlePengajuanController extends Controller
 
             $approval_pengajuan_availability = $approval_pengajuan->count();
 
-            $file_approval_pengajuan = DB::table('file_approval_pengajuan')
-                ->where('id_approval_pengajuan', '=', $approval_pengajuan[0]->id)
-                ->get();
-
             // ? Jika sudah pernah approve, update approval
             if ($approval_pengajuan_availability > 0) {
+                $file_approval_pengajuan = DB::table('file_approval_pengajuan')
+                    ->where('id_approval_pengajuan', '=', $approval_pengajuan[0]->id)
+                    ->get();
+
                 DB::table('approval_pengajuan')
                     ->where('id_pengajuan', '=', $id)
                     ->update([
@@ -856,6 +856,7 @@ class MiddlePengajuanController extends Controller
                         'size' => $file->getSize(),
                         'updated_at' => Carbon::now()
                     ]);
+
                 Storage::delete($storagePathApprovalPengajuan . $file_approval_pengajuan[0]->name);
             }
             // ? Jika belum pernah approve, buat approval baru
@@ -873,9 +874,14 @@ class MiddlePengajuanController extends Controller
                     ->update([
                         'status' => StatusPengajuanProvider::Rejected
                     ]);
+
+                $id_approval_pengajuan = DB::table('approval_pengajuan')
+                    ->where('id_pengajuan', '=', $id)
+                    ->get();
+
                 DB::table('file_approval_pengajuan')
                     ->insert([
-                        'id_approval_pengajuan' => $approval_pengajuan[0]->id,
+                        'id_approval_pengajuan' => $id_approval_pengajuan,
                         'name' => $filename,
                         'type' => $file->extension(),
                         'size' => $file->getSize(),
@@ -892,14 +898,14 @@ class MiddlePengajuanController extends Controller
             DB::table('notifikasi')
                 ->insert([
                     'id_user' => $rejected_pengajuan[0]->user_id,
-                    'konten' => 'Pengajuan anda sudah diterima oleh ' . Auth::user()->role . '! - ' . $rejected_pengajuan[0]->no_surat,
+                    'konten' => 'Pengajuan anda sudah ditolak oleh ' . Auth::user()->role . '! - ' . $rejected_pengajuan[0]->no_surat,
                     'url' => url("upload-file/middle/$id")
                 ]);
 
             // TODO: Kirim notifikasi ke approver
             DB::table('notifikasi')
                 ->insert([
-                    'id_user' => $rejected_pengajuan[0]->user_id,
+                    'id_user' => Auth::id(),
                     'konten' => 'Pengajuan sudah berhasil diapprove! - ' . $rejected_pengajuan[0]->no_surat,
                     'url' => url("upload-file/middle/$id")
                 ]);

@@ -544,34 +544,6 @@ class LowPengajuanController extends Controller
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
-                if (Auth::user()->role === 'kadin') {
-                    $approval_pengajuan = DB::table('approval_pengajuan')
-                        ->where('id_pengajuan', '=', $id)
-                        ->get();
-                    $file_approval_pengajuan = DB::table('file_approval_pengajuan')
-                        ->where('id_approval_pengajuan', '=', $approval_pengajuan[0]->id)
-                        ->get();
-                    if ($file_approval_pengajuan->count() === 0) {
-                        DB::table('file_approval_pengajuan')
-                            ->insert([
-                                'id_approval_pengajuan' => $approval_pengajuan[0]->id,
-                                'name' => $filename,
-                                'type' => $file->extension(),
-                                'size' => $file->getSize(),
-                                'created_at' => Carbon::now(),
-                                'updated_at' => Carbon::now()
-                            ]);
-                    } else {
-                        DB::table('file_approval_pengajuan')
-                            ->update([
-                                'id_approval_pengajuan' => $approval_pengajuan[0]->id,
-                                'name' => $filename,
-                                'type' => $file->extension(),
-                                'size' => $file->getSize(),
-                                'updated_at' => Carbon::now()
-                            ]);
-                    }
-                }
             }
 
             // * Automatic send proposal to next approver based on queue
@@ -612,7 +584,7 @@ class LowPengajuanController extends Controller
             // TODO: Kirim notifikasi ke approver
             DB::table('notifikasi')
                 ->insert([
-                    'id_user' => $accepted_pengajuan[0]->user_id,
+                    'id_user' => Auth::id(),
                     'konten' => 'Pengajuan sudah berhasil diapprove! - ' . $accepted_pengajuan[0]->no_surat,
                     'url' => url("upload-file/low/$id")
                 ]);
@@ -658,12 +630,11 @@ class LowPengajuanController extends Controller
 
             $approval_pengajuan_availability = $approval_pengajuan->count();
 
-            $file_approval_pengajuan = DB::table('file_approval_pengajuan')
-                ->where('id_approval_pengajuan', '=', $approval_pengajuan[0]->id)
-                ->get();
-
-
             if ($approval_pengajuan_availability > 0) {
+                $file_approval_pengajuan = DB::table('file_approval_pengajuan')
+                    ->where('id_approval_pengajuan', '=', $approval_pengajuan[0]->id)
+                    ->get();
+
                 DB::table('approval_pengajuan')
                     ->where('id_pengajuan', '=', $id)
                     ->update([
@@ -684,6 +655,7 @@ class LowPengajuanController extends Controller
                         'size' => $file->getSize(),
                         'updated_at' => Carbon::now()
                     ]);
+
                 Storage::delete($storagePathApprovalPengajuan . $file_approval_pengajuan[0]->name);
             } else {
                 DB::table('approval_pengajuan')
@@ -699,9 +671,14 @@ class LowPengajuanController extends Controller
                     ->update([
                         'status' => StatusPengajuanProvider::Rejected
                     ]);
+
+                $id_approval_pengajuan = DB::table('approval_pengajuan')
+                    ->where('id_pengajuan', '=', $id)
+                    ->get();
+                    
                 DB::table('file_approval_pengajuan')
                     ->insert([
-                        'id_approval_pengajuan' => $approval_pengajuan[0]->id,
+                        'id_approval_pengajuan' => $id_approval_pengajuan[0]->id,
                         'name' => $filename,
                         'type' => $file->extension(),
                         'size' => $file->getSize(),
@@ -718,14 +695,14 @@ class LowPengajuanController extends Controller
             DB::table('notifikasi')
                 ->insert([
                     'id_user' => $rejected_pengajuan[0]->user_id,
-                    'konten' => 'Pengajuan anda sudah diterima oleh ' . Auth::user()->role . '! - ' . $rejected_pengajuan[0]->no_surat,
+                    'konten' => 'Pengajuan anda sudah ditolak oleh ' . Auth::user()->role . '! - ' . $rejected_pengajuan[0]->no_surat,
                     'url' => url("upload-file/middle/$id")
                 ]);
 
             // TODO: Kirim notifikasi ke approver
             DB::table('notifikasi')
                 ->insert([
-                    'id_user' => $rejected_pengajuan[0]->user_id,
+                    'id_user' => Auth::id(),
                     'konten' => 'Pengajuan sudah berhasil diapprove! - ' . $rejected_pengajuan[0]->no_surat,
                     'url' => url("upload-file/middle/$id")
                 ]);

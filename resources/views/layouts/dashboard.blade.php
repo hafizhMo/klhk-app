@@ -1,3 +1,6 @@
+@php
+Debugbar::info($notifikasi)
+@endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
@@ -23,6 +26,7 @@
             </a>
         </div>
         <div class="w-full flex flex-wrap items-center place-content-end p-6">
+            <p class="mr-5">Lonceng</p>
             <div class="h-8 w-8 rounded-full bg-red-200 flex flex-wrap justify-center items-center">
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
