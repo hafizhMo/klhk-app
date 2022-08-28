@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container mx-auto">
-        <img class="mb-12" src="https://dishut.jatimprov.go.id/portal/public/fe/images/logo.png"
+        <img class="mb-12 mx-auto" src="{{asset('new-image-login.png')}}"
             alt="image-logo-dinas-kehutanan">
         <h2 class="text-xl font-semibold">Sign in</h2>
         <!-- <p class="mt-2 text-base">If you don't have an account register<br>You can
