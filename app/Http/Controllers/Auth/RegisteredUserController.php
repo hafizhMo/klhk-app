@@ -36,16 +36,22 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
+        if ($request->input('password') !== $request->input('confirm_password')) {
+            back()
+                ->with('error', 'Password input are not identical!');
+        }
+
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required']
         ]);
 
         $user = User::create([
-            'name' => $request->name,
+            'name' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => 'user'
         ]);
 
         event(new Registered($user));

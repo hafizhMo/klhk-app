@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Pengajuan\PengajuanController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\Pengajuan\Low\LowPengajuanController;
 use App\Http\Controllers\Pengajuan\File\FilePengajuanController;
@@ -34,10 +35,10 @@ Route::middleware('guest')->prefix('auth')->group(function () {
     Route::get('reset-password', function() {
         return view('auth.password.reset');
     });
-    // ! Register feature disabled on default
-    // Route::get('register', function() {
-    //     return view('auth.register');
-    // });
+    Route::get('register', function() {
+        return view('auth.register');
+    });
+    Route::post('register', [RegisteredUserController::class, 'store']);
 });
 
 Route::middleware('auth')->prefix('user')->group(function () {
