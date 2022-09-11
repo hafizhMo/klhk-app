@@ -95,6 +95,7 @@ foreach ($approval_detail_pengajuan as $value) {
             <tr>
                 <th scope="col" class="px-6 py-3">No</th>
                 <th scope="col" class="px-6 py-3 text-center">Persyaratan</th>
+                <th scope="col" class="px-6 py-3">Status</th>
                 <th scope="col" class="px-6 py-3">Aksi</th>
             </tr>
         </thead>
@@ -103,8 +104,11 @@ foreach ($approval_detail_pengajuan as $value) {
                 <tr class="bg-white border-b text-center">
                     <td class="px-6 py-4">{{ $i + 1 }}</td>
                     <td class="px-6 py-4 text-left">{{ $input[$i]->nama_input }}</td>
-                    <td class="px-6 py-4">
-                        @if ($input[$i]->available == true)
+                    @if ($input[$i]->available == true)
+                        <td class="py-4">
+                            <p>{{ $input[$i]->status ?? 'sudah di upload' }}</p>
+                        </td>
+                        <td class="py-4">
                             <a href="{{ url('user/detail-file/' . $input[$i]->url) }}">
                                 <svg class="ml-4 mr-4 w-12 h-12 text-gray-700 hover:text-gray-500" fill="currentColor"
                                     viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -114,17 +118,20 @@ foreach ($approval_detail_pengajuan as $value) {
                                         clip-rule="evenodd"></path>
                                 </svg>
                             </a>
-                            <p>{{ $input[$i]->status ?? 'sudah di upload' }}</p>
-                        @else
-                            <button type="button" data-modal-toggle="{{ $input[$i]->input_id }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="ml-4 mr-4 mb-2 w-6 h-6 text-gray-700 hover:text-gray-500" fill="currentColor" class="bi bi-arrow-up-square" viewBox="0 0 16 16"> 
-                                <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 9.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11.5z"
-                                clip-rule="evenodd"/> 
-                            </svg>
-                            </button>
+                        </td>
+                    @else
+                        <td class="py-4">
                             <p>{{ $input[$i]->status ?? 'belum diproses' }}</p>
-                        @endif
-                    </td>
+                        </td>
+                        <td class="py-4">
+                            <button type="button" data-modal-toggle="{{ $input[$i]->input_id }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="ml-4 mr-4 mb-2 w-6 h-6 text-gray-700 hover:text-gray-500" fill="currentColor" class="bi bi-arrow-up-square" viewBox="0 0 16 16"> 
+                                    <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 9.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11.5z"
+                                    clip-rule="evenodd"/> 
+                                </svg>
+                            </button>
+                        </td>
+                    @endif
                 </tr>
             @endfor
             @if ($file_approval !== '')
