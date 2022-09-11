@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('content')
-    @if ($jenis === 'bawah')
+    @if ($jenis === 'kecil')
         <a href="/user/upload-file/low/{{ $id }}">Back</a>
     @elseif ($jenis === 'menengah')
         <a href="/user/upload-file/middle/{{ $id }}">Back</a>

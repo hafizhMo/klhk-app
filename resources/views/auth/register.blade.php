@@ -3,7 +3,7 @@
 @section('content')
     <form method="POST" action="{{ url('/auth/register') }}" class="container mx-auto">
         @csrf
-        <img class="mb-6" src="https://dishut.jatimprov.go.id/portal/public/fe/images/logo.png" alt="image-logo-dinas-kehutanan">
+        <img class="mb-6" src="{{ asset('new-image-login.png') }}" alt="image-logo-dinas-kehutanan">
         <h2 class="text-xl font-semibold">Sign up</h2>
         <p class="mt-2 text-base">If you already have account? You can
           <a href="{{ url('/auth/login') }}" class="text-green-700 hover:text-green-800 font-semibold">Login here</a>!

@@ -2062,7 +2062,7 @@ module.exports = {
 
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
-window.Grid = __webpack_require__(/*! gridjs */ "./node_modules/gridjs/dist/gridjs.module.js");
+window.Grid = (__webpack_require__(/*! gridjs */ "./node_modules/gridjs/dist/gridjs.module.js").Grid);
 
 /***/ }),
 
