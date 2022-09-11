@@ -57,7 +57,8 @@ class LowPengajuanController extends Controller
 
         $status = DB::table('pengajuan')
             ->where('id', '=', $id)
-            ->get(['status']);
+            ->get(['status'])[0]
+            ->status;
 
         $approval_pengajuan = DB::table('approval_pengajuan')
             ->where('id_pengajuan', '=', $id)
@@ -84,9 +85,17 @@ class LowPengajuanController extends Controller
             }
         }
 
+        $current_approver_pengajuan = DB::table('pengajuan')
+            ->where('id', '=', $id)
+            ->get(['current_approver'])[0]
+            ->current_approver;
+
         $approval_file_pengajuan = DB::table('approval_file_pengajuan')
             ->join('file_detail_pengajuan', 'file_detail_pengajuan.id', 'approval_file_pengajuan.id_file_pengajuan')
+            ->join('users', 'users.id', 'approval_file_pengajuan.user_id')
             ->where('file_detail_pengajuan.id_pengajuan', '=', $id)
+            ->where('role', '=', $current_approver_pengajuan)
+            ->where('role', '=', Auth::user()->role)
             ->get();
 
         $notifikasi = DB::table('notifikasi')->where('id_user', '=', Auth::id())->get();
@@ -95,7 +104,7 @@ class LowPengajuanController extends Controller
             ->with('user', Auth::user())
             ->with('detail_pengajuan', $file)
             ->with('approval_detail_pengajuan', $approval_file_pengajuan)
-            ->with('status', $status[0]->status)
+            ->with('status', $status)
             ->with('approved', $already_approve ?? $already_approve > 0 ? true : false)
             ->with('notifikasi', $notifikasi)
             ->with('file_approval', base64_encode($file_approval_binary))
@@ -675,7 +684,7 @@ class LowPengajuanController extends Controller
                 $id_approval_pengajuan = DB::table('approval_pengajuan')
                     ->where('id_pengajuan', '=', $id)
                     ->get();
-                    
+
                 DB::table('file_approval_pengajuan')
                     ->insert([
                         'id_approval_pengajuan' => $id_approval_pengajuan[0]->id,

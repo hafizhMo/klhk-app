@@ -62,7 +62,8 @@ class MiddlePengajuanController extends Controller
 
         $status = DB::table('pengajuan')
             ->where('id', '=', $id)
-            ->get(['status']);
+            ->get(['status'])[0]
+            ->status;
 
         $approval_pengajuan = DB::table('approval_pengajuan')
             ->where('id_pengajuan', '=', $id)
@@ -89,9 +90,17 @@ class MiddlePengajuanController extends Controller
             }
         }
 
+        $current_approver_pengajuan = DB::table('pengajuan')
+            ->where('id', '=', $id)
+            ->get(['current_approver'])[0]
+            ->current_approver;
+
         $approval_file_pengajuan = DB::table('approval_file_pengajuan')
             ->join('file_detail_pengajuan', 'file_detail_pengajuan.id', 'approval_file_pengajuan.id_file_pengajuan')
+            ->join('users', 'users.id', 'approval_file_pengajuan.user_id')
             ->where('file_detail_pengajuan.id_pengajuan', '=', $id)
+            ->where('role', '=', $current_approver_pengajuan)
+            ->where('role', '=', Auth::user()->role)
             ->get();
 
         $notifikasi = DB::table('notifikasi')->where('id_user', '=', Auth::id())->get();
@@ -104,7 +113,7 @@ class MiddlePengajuanController extends Controller
             // ? Approval dokumen yang terupload
             ->with('approval_detail_pengajuan', $approval_file_pengajuan)
             // ? Status pengajuan (Ditolak/Diterima/Pending/Not Submitted)
-            ->with('status', $status[0]->status)
+            ->with('status', $status)
             // ? Untuk munculkan button untuk tolak atau setujui pengajuan (Untuk role selain user)
             ->with('approved', $already_approve ?? $already_approve > 0 ? true : false)
 
