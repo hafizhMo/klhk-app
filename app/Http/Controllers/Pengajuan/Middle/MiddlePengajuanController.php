@@ -857,7 +857,8 @@ class MiddlePengajuanController extends Controller
                 DB::table('pengajuan')
                     ->where('id', $id)
                     ->update([
-                        'status' => StatusPengajuanProvider::Rejected
+                        'status' => StatusPengajuanProvider::Rejected,
+                        'updated_at' => Carbon::now()
                     ]);
                 DB::table('file_approval_pengajuan')
                     ->update([
@@ -868,7 +869,9 @@ class MiddlePengajuanController extends Controller
                         'updated_at' => Carbon::now()
                     ]);
 
-                Storage::delete($storagePathApprovalPengajuan . $file_approval_pengajuan[0]->name);
+                if ($file_approval_pengajuan->count() > 0) {
+                    Storage::delete($storagePathApprovalPengajuan . $file_approval_pengajuan[0]->name);
+                }
             }
             // ? Jika belum pernah approve, buat approval baru
             else {

@@ -350,7 +350,7 @@ foreach ($approval_detail_pengajuan as $value) {
                         </button>
                     </div>
                     <form action="{{ url('user/upload-file/middle/' . $page_id . '/approve?status=ditolak') }}"
-                        class="relative bg-white rounded-lg shadow dark:bg-gray-700" method="post">
+                        class="relative bg-white rounded-lg shadow dark:bg-gray-700" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class="p-6 space-y-6">
                             <input type="file" name="surat_penolakan" id="surat_penolakan" accept="application/pdf"
