@@ -895,7 +895,7 @@ class MiddlePengajuanController extends Controller
 
                 DB::table('file_approval_pengajuan')
                     ->insert([
-                        'id_approval_pengajuan' => $id_approval_pengajuan->id,
+                        'id_approval_pengajuan' => $id_approval_pengajuan[0]->id,
                         'name' => $filename,
                         'type' => $file->extension(),
                         'size' => $file->getSize(),
