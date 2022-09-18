@@ -225,7 +225,7 @@ foreach ($approval_detail_pengajuan as $value) {
                 </form>
             @endif
         @else
-            @if ($status === 'pending' && $approved === false)
+            @if ($status === 'pending')
                 <button class="mt-8 text-white bg-red-700 hover:bg-red-800 font-medium rounded-lg text-sm px-12 py-2.5"
                     data-modal-toggle="tolakPengajuanModal">Tolak</button>
                 <button class="mt-8 text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-12 py-2.5"

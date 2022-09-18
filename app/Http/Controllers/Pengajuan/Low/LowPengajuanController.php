@@ -76,12 +76,13 @@ class LowPengajuanController extends Controller
                 if (Storage::exists($file_path)) {
                     $file_approval_binary = Storage::get($file_path);
                 }
-
-                $already_approve = DB::table('approval_pengajuan')
-                    ->join('users', 'users.id', 'approval_pengajuan.user_id')
-                    ->where('users.role', '=', Auth::user()->role)
-                    ->get()
-                    ->count();
+                // TODO: Blocking approval after being approved before
+                // ! Bad query
+                // $already_approve = DB::table('approval_pengajuan')
+                //     ->join('users', 'users.id', 'approval_pengajuan.user_id')
+                //     ->where('users.role', '=', Auth::user()->role)
+                //     ->get()
+                //     ->count();
             }
         }
 
@@ -105,7 +106,7 @@ class LowPengajuanController extends Controller
             ->with('detail_pengajuan', $file)
             ->with('approval_detail_pengajuan', $approval_file_pengajuan)
             ->with('status', $status)
-            ->with('approved', $already_approve ?? $already_approve > 0 ? true : false)
+            // ->with('approved', $already_approve ?? $already_approve > 0 ? true : false)
             ->with('notifikasi', $notifikasi)
             ->with('file_approval', base64_encode($file_approval_binary))
             ->with('page_id', $id);
@@ -640,6 +641,7 @@ class LowPengajuanController extends Controller
             $approval_pengajuan_availability = $approval_pengajuan->count();
 
             if ($approval_pengajuan_availability > 0) {
+                // // TODO: Waktu tolak pertama kali, ini gada, bikin error!
                 $file_approval_pengajuan = DB::table('file_approval_pengajuan')
                     ->where('id_approval_pengajuan', '=', $approval_pengajuan[0]->id)
                     ->get();
@@ -665,7 +667,9 @@ class LowPengajuanController extends Controller
                         'updated_at' => Carbon::now()
                     ]);
 
-                Storage::delete($storagePathApprovalPengajuan . $file_approval_pengajuan[0]->name);
+                if ($file_approval_pengajuan->count() > 0) {
+                    Storage::delete($storagePathApprovalPengajuan . $file_approval_pengajuan[0]->name);
+                }
             } else {
                 DB::table('approval_pengajuan')
                     ->insert([

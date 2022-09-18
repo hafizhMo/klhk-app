@@ -81,12 +81,13 @@ class MiddlePengajuanController extends Controller
                 if (Storage::exists($file_path)) {
                     $file_approval_binary = Storage::get($file_path);
                 }
-
-                $already_approve = DB::table('approval_pengajuan')
-                    ->join('users', 'users.id', 'approval_pengajuan.user_id')
-                    ->where('users.role', '=', Auth::user()->role)
-                    ->get()
-                    ->count();
+                // TODO: Blocking approval after being approved before
+                // ! Bad query
+                // $already_approve = DB::table('approval_pengajuan')
+                //     ->join('users', 'users.id', 'approval_pengajuan.user_id')
+                //     ->where('users.role', '=', Auth::user()->role)
+                //     ->get()
+                //     ->count();
             }
         }
 
@@ -114,8 +115,8 @@ class MiddlePengajuanController extends Controller
             ->with('approval_detail_pengajuan', $approval_file_pengajuan)
             // ? Status pengajuan (Ditolak/Diterima/Pending/Not Submitted)
             ->with('status', $status)
-            // ? Untuk munculkan button untuk tolak atau setujui pengajuan (Untuk role selain user)
-            ->with('approved', $already_approve ?? $already_approve > 0 ? true : false)
+            // // ? Untuk munculkan button untuk tolak atau setujui pengajuan (Untuk role selain user)
+            // ->with('approved', $already_approve ?? $already_approve > 0 ? true : false)
 
             ->with('notifikasi', $notifikasi)
             // ? File Approval yang diupload oleh approver (Surat Penolakan atau Surat Persetujuan)
@@ -621,6 +622,7 @@ class MiddlePengajuanController extends Controller
             ->get()
             ->count();
 
+        // TODO: Kalo ada berita acara, validasi rusak!
         if ($checkApprovedFileCount < JenisFilePengajuanProvider::JumlahJenisPengajuanTengah || $checkApprovedFileCount > JenisFilePengajuanProvider::JumlahJenisPengajuanTengah) {
             return back()
                 ->with('error', 'Masih ada file yang belum di-approve!');
