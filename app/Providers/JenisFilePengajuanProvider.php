@@ -64,4 +64,20 @@ abstract class JenisFilePengajuanProvider
      * ? Berita acara pengajuan usaha menengah
      */
     const BeritaAcara = 'berita_acara';
+
+    const TranslateJenisFilePengajuan = [
+        'surat_permohonan' => 'Surat Permohonan ditujukan kepada kepala Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu Provinsi Jawa Timur Bermaterai Rp. 10.000,-',
+        'nib' => 'Nomor Induk Berusaha (NIB)',
+        'sppl' => 'Surat Pernyataan Pengelolaan Lingkungan (SPPL)',
+        'surat_pernyataan' => 'Surat Pernyataan yang berisi jenis Pengolahan Hasil Hutan, Mesin Utama Produksi, dan kapasitas produksi',
+        'pernyataan_oss' => 'Pernyataan Mandiri dari OSS',
+        'akta' => 'Akta Pendirian',
+        'sppl_ukl_upl' => 'Dokumen Lingkungan Hidup berupa Surat Pernyataan Pengelolaan Lingkungan (SPPL) Upaya Pengelolaan Lingkungan dan Upaya Pemantauan Lingkungan (UKL-UPL)',
+        'proposal' => 'Proposal Teknis',
+        'jaminan_pasokan' => 'Jaminan pasokan bahan baku (dokumen kerjasama pasokan bahan baku atau pernyataan kesanggupan pemenuhan bahan baku dari pemasok)',
+        'bukti_mesin' => 'Bukti kepemilikan mesin utama produksi pengolahan hasil hutan atau pernyataan kesanggupan pemenuhan rencana pengadaan mesin utama produksi',
+        'bukti_prasarana' => 'Bukti/Dokumen kepemilikan atau penguasaan atas prasarana bangunan pabrik, tempat atau lahan penampungan bahan baku dan gudang kayu olahan',
+        'dokumen_tkp' => 'Dokumen tenaga kerja professional bersertifikat atau pernyataan komitmen pemenuhan tenaga teknis profesional bersertifikat',
+        'berita_acara' => 'Berita acara pengajuan usaha menengah'
+    ];
 }

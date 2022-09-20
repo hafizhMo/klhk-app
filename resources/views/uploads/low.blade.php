@@ -106,7 +106,8 @@ foreach ($approval_detail_pengajuan as $value) {
                     <td class="px-6 py-4 text-left">{{ $input[$i]->nama_input }}</td>
                     @if ($input[$i]->available == true)
                         <td class="py-4">
-                            <p>{{ $status === 'diterima' ? 'diterima' : $input[$i]->status ?? 'sudah di upload' }}</p>
+                            <p>{{ $pengajuan->status === 'diterima' ? 'diterima' : $input[$i]->status ?? 'sudah di upload' }}
+                            </p>
                         </td>
                         <td class="py-4">
                             <a href="{{ url('user/detail-file/' . $input[$i]->url) }}">
@@ -125,9 +126,12 @@ foreach ($approval_detail_pengajuan as $value) {
                         </td>
                         <td class="py-4">
                             <button type="button" data-modal-toggle="{{ $input[$i]->input_id }}">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="ml-4 mr-4 mb-2 w-6 h-6 text-gray-700 hover:text-gray-500" fill="currentColor" class="bi bi-arrow-up-square" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 9.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11.5z"
-                                    clip-rule="evenodd"/>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="ml-4 mr-4 mb-2 w-6 h-6 text-gray-700 hover:text-gray-500" fill="currentColor"
+                                    class="bi bi-arrow-up-square" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 9.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11.5z"
+                                        clip-rule="evenodd" />
                                 </svg>
                             </button>
                         </td>
@@ -137,7 +141,8 @@ foreach ($approval_detail_pengajuan as $value) {
             @if ($file_approval !== '')
                 <tr class="bg-white border-b text-center">
                     <td class="px-6 py-4"></td>
-                    <td class="px-6 py-4 text-left">{{ $status === 'ditolak' ? 'Surat Penolakan' : 'Surat Persetujuan' }}
+                    <td class="px-6 py-4 text-left">
+                        {{ $pengajuan->status === 'ditolak' ? 'Surat Penolakan' : 'Surat Persetujuan' }}
                     </td>
                     <td class="px-6 py-4">
                         <button type="button" data-modal-toggle="suratApprovalModal">
@@ -156,7 +161,7 @@ foreach ($approval_detail_pengajuan as $value) {
     </table>
     <div class="flex place-content-center">
         @if ($user->role === 'user')
-            @if ($status === 'not submitted' || $status === 'ditolak')
+            @if ($pengajuan->status === 'not submitted' || $pengajuan->status === 'ditolak')
                 <form action="{{ url('user/upload-file/low/' . $page_id . '/send') }}" method="post">
                     @csrf
                     <button
@@ -164,7 +169,7 @@ foreach ($approval_detail_pengajuan as $value) {
                 </form>
             @endif
         @else
-            @if ($status === 'pending')
+            @if ($pengajuan->status === 'pending')
                 <button class="mt-8 text-white bg-red-700 hover:bg-red-800 font-medium rounded-lg text-sm px-12 py-2.5"
                     data-modal-toggle="tolakPengajuanModal">Tolak</button>
                 <button class="mt-8 text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-12 py-2.5"
@@ -217,14 +222,14 @@ foreach ($approval_detail_pengajuan as $value) {
                                     </svg>
                                 </a>
                             @endif
-                            @if ($status === 'not submitted' || $status === 'ditolak')
+                            @if ($pengajuan->status === 'not submitted' || $pengajuan->status === 'ditolak')
                                 <input type="file" name="{{ $data->input_id }}" id="{{ $data->input_id }}"
                                     accept="application/pdf" required>
                             @endif
                         </div>
                         <div
                             class="flex justify-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
-                            @if ($status === 'not submitted' || $status === 'ditolak')
+                            @if ($pengajuan->status === 'not submitted' || $pengajuan->status === 'ditolak')
                                 <button data-modal-toggle="{{ $data->input_id }}" type="submit"
                                     class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Submit</button>
                             @endif
@@ -268,6 +273,13 @@ foreach ($approval_detail_pengajuan as $value) {
             </div>
         </div>
     @endforeach
+    @if ($pengajuan->status === 'diterima' || $pengajuan->status === 'ditolak')
+        <div class="mt-3">
+            <h1>Detail Pengajuan</h1>
+            <p>Status: {{ $pengajuan->status }}</p>
+            <p>Komentar: {{ $komentar_pengajuan ?? 'Tidak ada komentar' }}</p>
+        </div>
+    @endif
     @if ($user->role !== 'user')
         <div id="tolakPengajuanModal" tabindex="-1" aria-hidden="true"
             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">
@@ -296,7 +308,7 @@ foreach ($approval_detail_pengajuan as $value) {
                         <div class="p-6 space-y-6">
                             <input type="file" name="surat_penolakan" id="surat_penolakan" accept="application/pdf"
                                 required>
-                                <textarea name="komentar" id="komentar" cols="30" rows="10"></textarea>
+                            <textarea name="komentar" id="komentar" cols="30" rows="10"></textarea>
                         </div>
                         <div
                             class="flex items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
@@ -356,7 +368,7 @@ foreach ($approval_detail_pengajuan as $value) {
                 <div class="h-full w-full relative bg-white rounded-lg shadow dark:bg-gray-700">
                     <div class="flex justify-between items-start p-4 rounded-t border-b dark:border-gray-600">
                         <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                            {{ $status === 'ditolak' ? 'Surat Penolakan' : 'Surat Persetujuan' }}
+                            {{ $pengajuan->status === 'ditolak' ? 'Surat Penolakan' : 'Surat Persetujuan' }}
                         </h3>
                         <button type="button"
                             class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"

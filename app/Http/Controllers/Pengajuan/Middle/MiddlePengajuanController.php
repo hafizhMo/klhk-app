@@ -115,6 +115,8 @@ class MiddlePengajuanController extends Controller
             ->with('approval_detail_pengajuan', $approval_file_pengajuan)
             // ? Status pengajuan (Ditolak/Diterima/Pending/Not Submitted)
             ->with('status', $status)
+            ->with('pengajuan', $pengajuan[0])
+            ->with('komentar_pengajuan', $approval_pengajuan[count($approval_pengajuan) - 1]->komentar)
             // // ? Untuk munculkan button untuk tolak atau setujui pengajuan (Untuk role selain user)
             // ->with('approved', $already_approve ?? $already_approve > 0 ? true : false)
 

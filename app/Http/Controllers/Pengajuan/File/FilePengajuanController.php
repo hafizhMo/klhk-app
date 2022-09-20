@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Providers\JenisFilePengajuanProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Providers\StatusPengajuanProvider;
@@ -45,7 +46,7 @@ class FilePengajuanController extends Controller
             ->where('id_file_pengajuan', '=', $file[0]->id)
             ->get();
 
-        $id_file = DB::table('file_detail_pengajuan')
+        $file_pengajuan = DB::table('file_detail_pengajuan')
             ->where('name', '=', $filename)
             ->get();
 
@@ -56,7 +57,7 @@ class FilePengajuanController extends Controller
 
         $status = DB::table('approval_file_pengajuan')
             ->join('users', 'users.id', 'approval_file_pengajuan.user_id')
-            ->where('approval_file_pengajuan.id_file_pengajuan', '=', $id_file[0]->id)
+            ->where('approval_file_pengajuan.id_file_pengajuan', '=', $file_pengajuan[0]->id)
             ->where('users.role', '=', $current_approver[0]->current_approver)
             ->get();
 
@@ -68,7 +69,9 @@ class FilePengajuanController extends Controller
         return view('user.detail')
             ->with('user', Auth::user())
             ->with('id', $id)
-            ->with('jenis', $file[0]->skala_usaha)
+            // $file_pengajuan[0]->jenis_file
+            ->with('jenis_pengajuan', JenisFilePengajuanProvider::TranslateJenisFilePengajuan[$file_pengajuan[0]->jenis_file])
+            ->with('skala_usaha', $file[0]->skala_usaha)
             ->with('filename', $filename)
             ->with('komentar', $komentar)
             ->with('status', $status[0]->status ?? null)
