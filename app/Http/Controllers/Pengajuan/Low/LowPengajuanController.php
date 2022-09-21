@@ -617,14 +617,14 @@ class LowPengajuanController extends Controller
 
             $filename = $base_filename . "." . $file->extension();
 
-            $checkAcceptedFile = DB::table('file_detail_pengajuan')
+            $checkRejectedFile = DB::table('file_detail_pengajuan')
                 ->join('approval_file_pengajuan', 'approval_file_pengajuan.id_file_pengajuan', 'file_detail_pengajuan.id')
                 ->where('file_detail_pengajuan.id_pengajuan', '=', $id)
-                ->where('approval_file_pengajuan.status', '=', StatusPengajuanProvider::Accepted)
+                ->where('approval_file_pengajuan.status', '=', StatusPengajuanProvider::Rejected)
                 ->get()
                 ->count();
 
-            if ($checkAcceptedFile > 0) {
+            if ($checkRejectedFile === 0) {
                 return back()
                     ->with('error', 'Cek kembali file yang di-approve! Harus ada satu file yang ditolak!');
             }
