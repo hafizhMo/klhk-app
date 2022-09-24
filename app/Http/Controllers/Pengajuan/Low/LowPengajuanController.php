@@ -107,7 +107,7 @@ class LowPengajuanController extends Controller
             ->with('approval_detail_pengajuan', $approval_file_pengajuan)
             ->with('status', $status)
             ->with('pengajuan', $pengajuan[0])
-            ->with('komentar_pengajuan', $approval_pengajuan[count($approval_pengajuan) - 1]->komentar)
+            ->with('komentar_pengajuan', count($approval_pengajuan) > 0 ? $approval_pengajuan[count($approval_pengajuan) - 1]->komentar : null)
             // ->with('approved', $already_approve ?? $already_approve > 0 ? true : false)
             ->with('notifikasi', $notifikasi)
             ->with('file_approval', base64_encode($file_approval_binary))
