@@ -112,7 +112,7 @@ class MiddlePengajuanController extends Controller
             // ? File dokumen yang terupload untuk ID pengajuan tersebut
             ->with('detail_pengajuan', $file)
             // ? Approval dokumen yang terupload
-            ->with('approval_detail_pengajuan', $approval_file_pengajuan)
+            ->with('approval_detail_pengajuan', $file->status === 'pending' ? [] : $approval_file_pengajuan)
             // ? Status pengajuan (Ditolak/Diterima/Pending/Not Submitted)
             ->with('status', $status)
             ->with('pengajuan', $pengajuan[0])

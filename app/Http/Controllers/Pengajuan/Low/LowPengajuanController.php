@@ -104,7 +104,7 @@ class LowPengajuanController extends Controller
         return view('uploads.low')
             ->with('user', Auth::user())
             ->with('detail_pengajuan', $file)
-            ->with('approval_detail_pengajuan', $approval_file_pengajuan)
+            ->with('approval_detail_pengajuan', $file->status === 'pending' ? [] : $approval_file_pengajuan)
             ->with('status', $status)
             ->with('pengajuan', $pengajuan[0])
             ->with('komentar_pengajuan', count($approval_pengajuan) > 0 ? $approval_pengajuan[count($approval_pengajuan) - 1]->komentar : null)
