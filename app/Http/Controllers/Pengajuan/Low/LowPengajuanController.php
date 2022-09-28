@@ -366,7 +366,9 @@ class LowPengajuanController extends Controller
             ->insert([
                 'id_user' => Auth::id(),
                 'konten' => 'File pengajuan berhasil diunggah!',
-                'url' => url("upload-file/low/$id")
+                'url' => url("user/upload-file/low/$id"),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
             ]);
 
         return back();
@@ -420,7 +422,9 @@ class LowPengajuanController extends Controller
             ->insert([
                 'id_user' => Auth::id(),
                 'konten' => 'Pengajuan berhasil dikirim!',
-                'url' => url("upload-file/low/$id")
+                'url' => url("user/upload-file/low/$id"),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
             ]);
 
         return back();
@@ -590,7 +594,9 @@ class LowPengajuanController extends Controller
                 ->insert([
                     'id_user' => $accepted_pengajuan[0]->user_id,
                     'konten' => 'Pengajuan anda sudah diterima oleh ' . Auth::user()->role . '! - ' . $accepted_pengajuan[0]->no_surat,
-                    'url' => url("upload-file/low/$id")
+                    'url' => url("user/upload-file/low/$id"),
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
                 ]);
 
             // TODO: Kirim notifikasi ke approver
@@ -598,7 +604,9 @@ class LowPengajuanController extends Controller
                 ->insert([
                     'id_user' => Auth::id(),
                     'konten' => 'Pengajuan sudah berhasil diapprove! - ' . $accepted_pengajuan[0]->no_surat,
-                    'url' => url("upload-file/low/$id")
+                    'url' => url("user/upload-file/low/$id"),
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
                 ]);
 
             return back();
@@ -711,7 +719,9 @@ class LowPengajuanController extends Controller
                 ->insert([
                     'id_user' => $rejected_pengajuan[0]->user_id,
                     'konten' => 'Pengajuan anda sudah ditolak oleh ' . Auth::user()->role . '! - ' . $rejected_pengajuan[0]->no_surat,
-                    'url' => url("upload-file/middle/$id")
+                    'url' => url("user/upload-file/middle/$id"),
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
                 ]);
 
             // TODO: Kirim notifikasi ke approver
@@ -719,7 +729,9 @@ class LowPengajuanController extends Controller
                 ->insert([
                     'id_user' => Auth::id(),
                     'konten' => 'Pengajuan sudah berhasil diapprove! - ' . $rejected_pengajuan[0]->no_surat,
-                    'url' => url("upload-file/middle/$id")
+                    'url' => url("user/upload-file/middle/$id"),
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
                 ]);
 
             return back();

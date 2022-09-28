@@ -67,7 +67,7 @@ class PengajuanController extends Controller
                 ->insert([
                     'id_user' => Auth::id(),
                     'konten' => 'Pengajuan berhasil dibuat!',
-                    'url' => url("upload-file/low/$pengajuan->id")
+                    'url' => url("user/upload-file/low/$pengajuan->id")
                 ]);
             return redirect('/user/upload-file/low/' . $pengajuan->id)
                 ->with('user', Auth::user());
@@ -76,7 +76,7 @@ class PengajuanController extends Controller
                 ->insert([
                     'id_user' => Auth::id(),
                     'konten' => 'Pengajuan berhasil dibuat!',
-                    'url' => url("upload-file/middle/$pengajuan->id")
+                    'url' => url("user/upload-file/middle/$pengajuan->id")
                 ]);
             return redirect('/user/upload-file/middle/' . $pengajuan->id)
                 ->with('user', Auth::user());
