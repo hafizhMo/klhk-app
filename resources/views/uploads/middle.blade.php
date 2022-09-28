@@ -172,8 +172,13 @@ foreach ($approval_detail_pengajuan as $value) {
                     <td class="py-4 text-left">{{ $input[$i]->nama_input }}</td>
                     @if ($input[$i]->available == true)
                         <td class="py-4 text-left">
-                            <p>{{ $pengajuan->status === 'diterima' ? 'diterima' : $input[$i]->status ?? 'sudah di upload' }}
-                            </p>
+                            @if ($user->role === 'user')
+                                <p>{{ $pengajuan->status === 'diterima' ? 'diterima' : $input[$i]->status ?? 'sudah di upload' }}
+                                </p>
+                            @else
+                                <p>{{ $input[$i]->status ?? 'belum diproses'  }}
+                                </p>
+                            @endif
                         </td>
                         <td class="py-4">
                             <a href="{{ url('user/detail-file/' . $input[$i]->url) }}">
