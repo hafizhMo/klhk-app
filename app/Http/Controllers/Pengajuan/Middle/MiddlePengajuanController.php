@@ -654,8 +654,6 @@ class MiddlePengajuanController extends Controller
 
         // ? Aksi penerimaan pengajuan tengah
         if ($statusQuery === 'diterima') {
-            dd($request->input('komentar'));
-
             // ? Aksi tambahan untuk Kepala Dinas
             if (Auth::user()->role === 'kadin') {
                 Debugbar::info($request->file('surat_persetujuan'));
