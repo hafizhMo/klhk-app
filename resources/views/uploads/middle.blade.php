@@ -212,7 +212,7 @@ foreach ($approval_detail_pengajuan as $value) {
             @if ($file_approval !== '')
                 <tr class="bg-white border-b text-center">
                     <td class="px-6 py-4"></td>
-                    <td class="px-6 py-4 text-left">Surat Approval</td>
+                    <td class="px-6 py-4 text-left">{{ $status === 'diterima' ? 'Surat Persetujuan' : 'Surat Penolakan' }}</td>
                     <td class="px-6 py-4">
                         <button type="button" data-modal-toggle="suratApprovalModal">
                             <svg class="w-6 h-6 text-gray-700 hover:text-gray-500" fill="currentColor" viewBox="0 0 20 20"

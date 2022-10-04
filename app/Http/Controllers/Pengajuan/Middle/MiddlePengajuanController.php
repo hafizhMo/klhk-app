@@ -623,16 +623,30 @@ class MiddlePengajuanController extends Controller
             array_push($checkFilePengajuanIds, $val->id);
         }
 
+        $checkBeritaAcaraAvailability = DB::table('file_detail_pengajuan')
+            ->where('id_pengajuan', '=', $id)
+            ->where('jenis_file', '=', 'berita_acara')
+            ->get()
+            ->count();
+
         $checkApprovedFileCount = DB::table('approval_file_pengajuan')
             ->whereIn('id_file_pengajuan', $checkFilePengajuanIds)
             ->get()
             ->count();
 
         // TODO: Kalo ada berita acara, validasi rusak!
-        if ($checkApprovedFileCount < JenisFilePengajuanProvider::JumlahJenisPengajuanTengah || $checkApprovedFileCount > JenisFilePengajuanProvider::JumlahJenisPengajuanTengah) {
-            return back()
-                ->with('error', 'Masih ada file yang belum di-approve!');
+        if ($checkBeritaAcaraAvailability > 0) {
+            if ($checkApprovedFileCount < JenisFilePengajuanProvider::JumlahJenisPengajuanTengah + 1 || $checkApprovedFileCount > JenisFilePengajuanProvider::JumlahJenisPengajuanTengah + 1) {
+                return back()
+                    ->with('error', 'Masih ada file yang belum di-approve!');
+            }
+        } else {
+            if ($checkApprovedFileCount < JenisFilePengajuanProvider::JumlahJenisPengajuanTengah || $checkApprovedFileCount > JenisFilePengajuanProvider::JumlahJenisPengajuanTengah) {
+                return back()
+                    ->with('error', 'Masih ada file yang belum di-approve!');
+            }
         }
+
 
         // ! ================================
 
@@ -640,6 +654,8 @@ class MiddlePengajuanController extends Controller
 
         // ? Aksi penerimaan pengajuan tengah
         if ($statusQuery === 'diterima') {
+            dd($request->input('komentar'));
+
             // ? Aksi tambahan untuk Kepala Dinas
             if (Auth::user()->role === 'kadin') {
                 Debugbar::info($request->file('surat_persetujuan'));
