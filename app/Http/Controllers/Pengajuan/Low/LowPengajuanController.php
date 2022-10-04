@@ -183,6 +183,7 @@ class LowPengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::SuratPermohonan)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -223,6 +224,7 @@ class LowPengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::NIB)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -263,6 +265,7 @@ class LowPengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::SPPL)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -303,6 +306,7 @@ class LowPengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::SuratPernyataan)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -343,6 +347,7 @@ class LowPengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::PenyataanMandiriOSS)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),

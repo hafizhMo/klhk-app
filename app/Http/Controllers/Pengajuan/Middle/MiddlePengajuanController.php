@@ -196,6 +196,7 @@ class MiddlePengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::NIB)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -235,6 +236,7 @@ class MiddlePengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::AktaPendirian)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -274,6 +276,7 @@ class MiddlePengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::SPPL_UKL_UPL)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -314,6 +317,7 @@ class MiddlePengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::ProposalTeknis)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -353,6 +357,7 @@ class MiddlePengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::JaminanPasokanBahanBaku)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -392,6 +397,7 @@ class MiddlePengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::BuktiKepemilikanMesinUtama)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -431,6 +437,7 @@ class MiddlePengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::BuktiKepemilikanPrasaranaPabrik)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -470,6 +477,7 @@ class MiddlePengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::DokumenTenagaKerjaProfesional)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -509,6 +517,7 @@ class MiddlePengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::BeritaAcara)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
