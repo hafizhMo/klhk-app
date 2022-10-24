@@ -1,87 +1,117 @@
 @php
-$input = [
-    (object) [
-        'nama_input' => 'Surat Permohonan ditujukan kepada kepala Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu Provinsi Jawa Timur Bermaterai Rp. 10.000,-',
-        'input_id' => 'surat_permohonan',
-        'url' => '',
-        'available' => false,
-        'status' => null,
-    ],
-    (object) [
-        'nama_input' => 'Nomor Induk Berusaha (NIB)',
-        'input_id' => 'nib',
-        'url' => '',
-        'available' => false,
-        'status' => null,
-    ],
-    (object) [
-        'nama_input' => 'Surat Pernyataan Pengelolaan Lingkungan (SPPL)',
-        'input_id' => 'sppl',
-        'url' => '',
-        'available' => false,
-        'status' => null,
-    ],
-    (object) [
-        'nama_input' => 'Surat Pernyataan yang berisi jenis Pengolahan Hasil Hutan, Mesin Utama Produksi, dan kapasitas produksi',
-        'input_id' => 'surat_pernyataan',
-        'url' => '',
-        'available' => false,
-        'status' => null,
-    ],
-    (object) [
-        'nama_input' => 'Pernyataan Mandiri dari OSS',
-        'input_id' => 'pernyataan_oss',
-        'url' => '',
-        'available' => false,
-        'status' => null,
-    ],
-];
+    $input = [
+        (object) [
+            'nama_input' => 'Surat Permohonan ditujukan kepada kepala Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu Provinsi Jawa Timur Bermaterai Rp. 10.000,-',
+            'input_id' => 'surat_permohonan',
+            'url' => '',
+            'available' => false,
+            'status' => null,
+        ],
+        (object) [
+            'nama_input' => 'Nomor Induk Berusaha (NIB)',
+            'input_id' => 'nib',
+            'url' => '',
+            'available' => false,
+            'status' => null,
+        ],
+        (object) [
+            'nama_input' => 'Surat Pernyataan Pengelolaan Lingkungan (SPPL)',
+            'input_id' => 'sppl',
+            'url' => '',
+            'available' => false,
+            'status' => null,
+        ],
+        (object) [
+            'nama_input' => 'Surat Pernyataan yang berisi jenis Pengolahan Hasil Hutan, Mesin Utama Produksi, dan kapasitas produksi',
+            'input_id' => 'surat_pernyataan',
+            'url' => '',
+            'available' => false,
+            'status' => null,
+        ],
+        (object) [
+            'nama_input' => 'Pernyataan Mandiri dari OSS',
+            'input_id' => 'pernyataan_oss',
+            'url' => '',
+            'available' => false,
+            'status' => null,
+        ],
+    ];
 
-foreach ($detail_pengajuan as $value) {
-    $url = $value->id_pengajuan . '/' . $value->name;
-    switch ($value->jenis_file) {
-        case 'surat_permohonan':
-            $input[0]->available = true;
-            $input[0]->url = $url;
-            break;
-        case 'nib':
-            $input[1]->available = true;
-            $input[1]->url = $url;
-            break;
-        case 'sppl':
-            $input[2]->available = true;
-            $input[2]->url = $url;
-            break;
-        case 'surat_pernyataan':
-            $input[3]->available = true;
-            $input[3]->url = $url;
-            break;
-        case 'pernyataan_oss':
-            $input[4]->available = true;
-            $input[4]->url = $url;
-            break;
-    }
-}
+    // foreach ($detail_pengajuan as $value) {
+    //     $url = $value->id_pengajuan . '/' . $value->name;
+    //     switch ($value->jenis_file) {
+    //         case 'surat_permohonan':
+    //             $input[0]->available = true;
+    //             $input[0]->url = $url;
+    //             break;
+    //         case 'nib':
+    //             $input[1]->available = true;
+    //             $input[1]->url = $url;
+    //             break;
+    //         case 'sppl':
+    //             $input[2]->available = true;
+    //             $input[2]->url = $url;
+    //             break;
+    //         case 'surat_pernyataan':
+    //             $input[3]->available = true;
+    //             $input[3]->url = $url;
+    //             break;
+    //         case 'pernyataan_oss':
+    //             $input[4]->available = true;
+    //             $input[4]->url = $url;
+    //             break;
+    //     }
+    // }
 
-foreach ($approval_detail_pengajuan as $value) {
-    switch ($value->jenis_file) {
-        case 'surat_permohonan':
-            $input[0]->status = $value->status;
-            break;
-        case 'nib':
-            $input[1]->status = $value->status;
-            break;
-        case 'sppl':
-            $input[2]->status = $value->status;
-            break;
-        case 'surat_pernyataan':
-            $input[3]->status = $value->status;
-            break;
-        case 'pernyataan_oss':
-            $input[4]->status = $value->status;
-            break;
+    foreach ($approval_detail_pengajuan as $value) {
+        switch ($value->jenis_file) {
+            case 'surat_permohonan':
+                $input[0]->status = $value->status;
+                if ($value->status === 'ditolak') {
+                    $input[0]->available = false;
+                } else {
+                    $input[0]->available = true;
+                }
+                $input[0]->url = $url;
+                break;
+            case 'nib':
+                $input[1]->status = $value->status;
+                if ($value->status === 'ditolak') {
+                    $input[1]->available = false;
+                } else {
+                    $input[1]->available = true;
+                }
+                $input[1]->url = $url;
+                break;
+            case 'sppl':
+                $input[2]->status = $value->status;
+                if ($value->status === 'ditolak') {
+                    $input[2]->available = false;
+                } else {
+                    $input[2]->available = true;
+                }
+                $input[2]->url = $url;
+                break;
+            case 'surat_pernyataan':
+                $input[3]->status = $value->status;
+                if ($value->status === 'ditolak') {
+                    $input[3]->available = false;
+                } else {
+                    $input[3]->available = true;
+                }
+                $input[3]->url = $url;
+                break;
+            case 'pernyataan_oss':
+                $input[4]->status = $value->status;
+                if ($value->status === 'ditolak') {
+                    $input[4]->available = false;
+                } else {
+                    $input[4]->available = true;
+                }
+                $input[4]->url = $url;
+                break;
+        }
     }
-}
 @endphp
 
 @extends('layouts.dashboard')
@@ -110,7 +140,7 @@ foreach ($approval_detail_pengajuan as $value) {
                                 <p>{{ $pengajuan->status === 'diterima' ? 'diterima' : $input[$i]->status ?? 'sudah di upload' }}
                                 </p>
                             @else
-                                <p>{{ $input[$i]->status ?? 'belum diproses'  }}
+                                <p>{{ $input[$i]->status ?? 'belum diproses' }}
                                 </p>
                             @endif
                         </td>

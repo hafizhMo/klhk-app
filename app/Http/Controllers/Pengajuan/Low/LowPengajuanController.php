@@ -91,12 +91,16 @@ class LowPengajuanController extends Controller
             ->get(['current_approver'])[0]
             ->current_approver;
 
-        $approval_file_pengajuan = DB::table('approval_file_pengajuan')
-            ->join('file_detail_pengajuan', 'file_detail_pengajuan.id', 'approval_file_pengajuan.id_file_pengajuan')
-            ->join('users', 'users.id', 'approval_file_pengajuan.user_id')
-            ->where('file_detail_pengajuan.id_pengajuan', '=', $id)
-            ->where('role', '=', $current_approver_pengajuan)
-            ->where('role', '=', Auth::user()->role)
+        $approval_file_pengajuan = DB::table('approval_file_pengajuan AS approval')
+            ->select([
+                'approval.*',
+                'file_pengajuan.*',
+            ])
+            ->join('file_detail_pengajuan AS file_pengajuan', 'file_pengajuan.id', 'approval.id_file_pengajuan')
+            ->join('users AS user', 'user.id', 'approval.user_id')
+            ->where('file_pengajuan.id_pengajuan', '=', $id)
+            ->where('user.role', '=', $current_approver_pengajuan)
+            ->orWhere('user.role', '=', Auth::user()->role)
             ->get();
 
         $notifikasi = DB::table('notifikasi')->where('id_user', '=', Auth::id())->get();
