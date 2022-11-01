@@ -108,6 +108,11 @@ class MiddlePengajuanController extends Controller
             ->orWhere('user.role', '=', Auth::user()->role)
             ->get();
 
+        $file_pengajuan = DB::table('file_detail_pengajuan')
+            ->join('pengajuan', 'pengajuan.id', 'file_detail_pengajuan.id_pengajuan')
+            ->where('file_detail_pengajuan.id_pengajuan', '=', $id)
+            ->get();
+
         $notifikasi = DB::table('notifikasi')->where('id_user', '=', Auth::id())->get();
 
         return view('uploads.middle')
@@ -116,7 +121,7 @@ class MiddlePengajuanController extends Controller
             // ? File dokumen yang terupload untuk ID pengajuan tersebut
             ->with('detail_pengajuan', $status !== 'ditolak' ? $file : [])
             // ? Approval dokumen yang terupload
-            ->with('approval_detail_pengajuan', $approval_file_pengajuan)
+            ->with('approval_detail_pengajuan', $status === 'not submitted' || $status === 'pending' ? $file_pengajuan : $approval_file_pengajuan)
             // ? Status pengajuan (Ditolak/Diterima/Pending/Not Submitted)
             ->with('status', $status)
             ->with('pengajuan', $pengajuan[0])

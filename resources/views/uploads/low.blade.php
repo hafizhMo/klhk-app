@@ -37,33 +37,8 @@
         ],
     ];
 
-    // foreach ($detail_pengajuan as $value) {
-    //     $url = $value->id_pengajuan . '/' . $value->name;
-    //     switch ($value->jenis_file) {
-    //         case 'surat_permohonan':
-    //             $input[0]->available = true;
-    //             $input[0]->url = $url;
-    //             break;
-    //         case 'nib':
-    //             $input[1]->available = true;
-    //             $input[1]->url = $url;
-    //             break;
-    //         case 'sppl':
-    //             $input[2]->available = true;
-    //             $input[2]->url = $url;
-    //             break;
-    //         case 'surat_pernyataan':
-    //             $input[3]->available = true;
-    //             $input[3]->url = $url;
-    //             break;
-    //         case 'pernyataan_oss':
-    //             $input[4]->available = true;
-    //             $input[4]->url = $url;
-    //             break;
-    //     }
-    // }
-
     foreach ($approval_detail_pengajuan as $value) {
+        $url = $value->id_pengajuan . '/' . $value->name;
         switch ($value->jenis_file) {
             case 'surat_permohonan':
                 $input[0]->status = $value->status;
