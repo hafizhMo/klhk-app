@@ -96,21 +96,12 @@ class MiddlePengajuanController extends Controller
             ->get(['current_approver'])[0]
             ->current_approver;
 
-        $approval_file_pengajuan = DB::table('approval_file_pengajuan AS approval')
-            ->select([
-                'approval.*',
-                'file_pengajuan.*',
-            ])
-            ->join('file_detail_pengajuan AS file_pengajuan', 'file_pengajuan.id', 'approval.id_file_pengajuan')
-            ->join('users AS user', 'user.id', 'approval.user_id')
-            ->where('file_pengajuan.id_pengajuan', '=', $id)
-            ->where('user.role', '=', $current_approver_pengajuan)
-            ->orWhere('user.role', '=', Auth::user()->role)
-            ->get();
-
-        $file_pengajuan = DB::table('file_detail_pengajuan')
-            ->join('pengajuan', 'pengajuan.id', 'file_detail_pengajuan.id_pengajuan')
+        $approval_file_pengajuan = DB::table('approval_file_pengajuan')
+            ->join('file_detail_pengajuan', 'file_detail_pengajuan.id', 'approval_file_pengajuan.id_file_pengajuan')
+            ->join('users', 'users.id', 'approval_file_pengajuan.user_id')
             ->where('file_detail_pengajuan.id_pengajuan', '=', $id)
+            ->where('role', '=', $current_approver_pengajuan)
+            ->where('role', '=', Auth::user()->role)
             ->get();
 
         $notifikasi = DB::table('notifikasi')->where('id_user', '=', Auth::id())->get();
@@ -121,7 +112,7 @@ class MiddlePengajuanController extends Controller
             // ? File dokumen yang terupload untuk ID pengajuan tersebut
             ->with('detail_pengajuan', $status !== 'ditolak' ? $file : [])
             // ? Approval dokumen yang terupload
-            ->with('approval_detail_pengajuan', $status === 'not submitted' || $status === 'pending' ? $file_pengajuan : $approval_file_pengajuan)
+            ->with('approval_detail_pengajuan',  Auth::user()->role === 'user' ? ($status === 'pending' ? [] : $approval_file_pengajuan) : $approval_file_pengajuan)
             // ? Status pengajuan (Ditolak/Diterima/Pending/Not Submitted)
             ->with('status', $status)
             ->with('pengajuan', $pengajuan[0])
@@ -205,6 +196,7 @@ class MiddlePengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::NIB)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -244,6 +236,7 @@ class MiddlePengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::AktaPendirian)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -283,6 +276,7 @@ class MiddlePengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::SPPL_UKL_UPL)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -323,6 +317,7 @@ class MiddlePengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::ProposalTeknis)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -362,6 +357,7 @@ class MiddlePengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::JaminanPasokanBahanBaku)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -401,6 +397,7 @@ class MiddlePengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::BuktiKepemilikanMesinUtama)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -440,6 +437,7 @@ class MiddlePengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::BuktiKepemilikanPrasaranaPabrik)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -479,6 +477,7 @@ class MiddlePengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::DokumenTenagaKerjaProfesional)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -518,6 +517,7 @@ class MiddlePengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::BeritaAcara)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),

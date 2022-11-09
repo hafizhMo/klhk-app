@@ -65,89 +65,77 @@ $input = [
     ],
 ];
 
+foreach ($detail_pengajuan as $value) {
+    $url = $value->id_pengajuan . '/' . $value->name;
+    switch ($value->jenis_file) {
+        case 'nib':
+            $input[0]->available = true;
+            $input[0]->url = $url;
+            break;
+        case 'akta':
+            $input[1]->available = true;
+            $input[1]->url = $url;
+            break;
+        case 'sppl_ukl_upl':
+            $input[2]->available = true;
+            $input[2]->url = $url;
+            break;
+        case 'proposal':
+            $input[3]->available = true;
+            $input[3]->url = $url;
+            break;
+        case 'jaminan_pasokan':
+            $input[4]->available = true;
+            $input[4]->url = $url;
+            break;
+        case 'bukti_mesin':
+            $input[5]->available = true;
+            $input[5]->url = $url;
+            break;
+        case 'bukti_prasarana':
+            $input[6]->available = true;
+            $input[6]->url = $url;
+            break;
+        case 'dokumen_tkp':
+            $input[7]->available = true;
+            $input[7]->url = $url;
+            break;
+        case 'berita_acara':
+            $input[8]->available = true;
+            $input[8]->url = $url;
+            break;
+    }
+}
+
 foreach ($approval_detail_pengajuan as $value) {
     $url = $value->id_pengajuan . '/' . $value->name;
     switch ($value->jenis_file) {
         case 'nib':
             $input[0]->status = $value->status;
-            if ($value->status === 'ditolak') {
-                $input[0]->available = false;
-            } else {
-                $input[0]->available = true;
-            }
-            $input[0]->url = $url;
             break;
         case 'akta':
             $input[1]->status = $value->status;
-            if ($value->status === 'ditolak') {
-                $input[1]->available = false;
-            } else {
-                $input[1]->available = true;
-            }
-            $input[1]->url = $url;
             break;
         case 'sppl_ukl_upl':
             $input[2]->status = $value->status;
-            if ($value->status === 'ditolak') {
-                $input[2]->available = false;
-            } else {
-                $input[2]->available = true;
-            }
-            $input[2]->url = $url;
             break;
         case 'proposal':
             $input[3]->status = $value->status;
-            if ($value->status === 'ditolak') {
-                $input[3]->available = false;
-            } else {
-                $input[3]->available = true;
-            }
-            $input[3]->url = $url;
             break;
         case 'jaminan_pasokan':
             $input[4]->status = $value->status;
-            if ($value->status === 'ditolak') {
-                $input[4]->available = false;
-            } else {
-                $input[4]->available = true;
-            }
-            $input[4]->url = $url;
             break;
         case 'bukti_mesin':
             $input[5]->status = $value->status;
-            if ($value->status === 'ditolak') {
-                $input[5]->available = false;
-            } else {
-                $input[5]->available = true;
-            }
-            $input[5]->url = $url;
             break;
         case 'bukti_prasarana':
             $input[6]->status = $value->status;
-            if ($value->status === 'ditolak') {
-                $input[6]->available = false;
-            } else {
-                $input[6]->available = true;
-            }
-            $input[6]->url = $url;
             break;
         case 'dokumen_tkp':
             $input[7]->status = $value->status;
-            if ($value->status === 'ditolak') {
-                $input[7]->available = false;
-            } else {
-                $input[7]->available = true;
-            }
-            $input[7]->url = $url;
             break;
         case 'berita_acara':
             $input[8]->status = $value->status;
-            if ($value->status === 'ditolak') {
-                $input[8]->available = false;
-            } else {
-                $input[8]->available = true;
-            }
-            $input[8]->url = $url;
             break;
     }
 }

@@ -91,29 +91,20 @@ class LowPengajuanController extends Controller
             ->get(['current_approver'])[0]
             ->current_approver;
 
-        $approval_file_pengajuan = DB::table('approval_file_pengajuan AS approval')
-            ->select([
-                'approval.*',
-                'file_pengajuan.*',
-            ])
-            ->join('file_detail_pengajuan AS file_pengajuan', 'file_pengajuan.id', 'approval.id_file_pengajuan')
-            ->join('users AS user', 'user.id', 'approval.user_id')
-            ->where('file_pengajuan.id_pengajuan', '=', $id)
-            ->where('user.role', '=', $current_approver_pengajuan)
-            ->orWhere('user.role', '=', Auth::user()->role)
+        $approval_file_pengajuan = DB::table('approval_file_pengajuan')
+            ->join('file_detail_pengajuan', 'file_detail_pengajuan.id', 'approval_file_pengajuan.id_file_pengajuan')
+            ->join('users', 'users.id', 'approval_file_pengajuan.user_id')
+            ->where('file_detail_pengajuan.id_pengajuan', '=', $id)
+            ->where('role', '=', $current_approver_pengajuan)
+            ->where('role', '=', Auth::user()->role)
             ->get();
-
-        $file_pengajuan = DB::table('file_detail_pengajuan')
-                ->join('pengajuan', 'pengajuan.id', 'file_detail_pengajuan.id_pengajuan')
-                ->where('file_detail_pengajuan.id_pengajuan', '=', $id)
-                ->get();
 
         $notifikasi = DB::table('notifikasi')->where('id_user', '=', Auth::id())->get();
 
         return view('uploads.low')
             ->with('user', Auth::user())
             ->with('detail_pengajuan', $status !== 'ditolak' ? $file : [])
-            ->with('approval_detail_pengajuan', $status === 'not submitted' || $status === 'pending' ? $file_pengajuan : $approval_file_pengajuan)
+            ->with('approval_detail_pengajuan', Auth::user()->role === 'user' ? ($status === 'pending' ? [] : $approval_file_pengajuan) : $approval_file_pengajuan)
             ->with('status', $status)
             ->with('pengajuan', $pengajuan[0])
             ->with('komentar_pengajuan', count($approval_pengajuan) > 0 ? $approval_pengajuan[count($approval_pengajuan) - 1]->komentar : null)
@@ -192,6 +183,7 @@ class LowPengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::SuratPermohonan)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -232,6 +224,7 @@ class LowPengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::NIB)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -272,6 +265,7 @@ class LowPengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::SPPL)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -312,6 +306,7 @@ class LowPengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::SuratPernyataan)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
@@ -352,6 +347,7 @@ class LowPengajuanController extends Controller
             } else {
                 DB::table('file_detail_pengajuan')
                     ->where('id_pengajuan', '=', $id)
+                    ->where('jenis_file', '=', JenisFilePengajuanProvider::PenyataanMandiriOSS)
                     ->update([
                         'name' => $filename,
                         'type' => $file->extension(),
